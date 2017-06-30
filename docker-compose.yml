@@ -1,0 +1,19 @@
+version: '3' 
+services:
+  tensorflow_python3_jupyter:
+    image: openkbs/tensorflow-python3-jupyter
+    build:
+      context: ./Dockerfile
+    container_name: tensorflow-python3-jupyter
+    environment:
+      - PASSWORD=${JUPYTER_PASSWORD:-password123}
+    ports:
+      - 26006:6006
+      - 28888:8888
+    env_file:
+      - ./docker.env
+    volumes:
+      - $HOME/data-docker/tensorflow-python3-jupyter/data:/data
+      - $HOME/data-docker/tensorflow-python3-jupyter/notebooks:/notebooks
+      - $HOME/data-docker/tensorflow-python3-jupyter/logs:/logs
+
