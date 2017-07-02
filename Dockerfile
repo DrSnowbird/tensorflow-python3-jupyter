@@ -2,24 +2,25 @@ FROM ubuntu:16.04
 
 MAINTAINER OpenKBS <DrSnowbird@openkbs.org>
 
-# Pick up some Tensorflow dependencies
+#### ---- Install some Tensorflow dependencies ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        curl \
-        libfreetype6-dev \
-        libpng12-dev \
-        libzmq3-dev \
-        pkg-config \
-        python \
-        python3 \
-        python3-dev \
-        python-pip \
-        python3-pip \
-        python3-setuptools \
-        rsync \
-        software-properties-common \
-        unzip \
-        && \
+    build-essential \
+    curl \
+    libfreetype6-dev \
+    libpng12-dev \
+    libzmq3-dev \
+    pkg-config \
+    python \
+    python3 \
+    python3-dev \
+    python-pip \
+    python3-pip \
+    python3-setuptools \
+    rsync \
+    software-properties-common \
+    unzip \
+    pkg-config libpcre3-dev zlib1g-dev liblzma-dev \
+    && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
