@@ -7,4 +7,6 @@ scipy
 panda
 pandasql
 matplotlib
-sklearn
+scikit_learn
+Flask
+seaborn
