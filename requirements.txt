@@ -10,3 +10,4 @@ matplotlib
 scikit_learn
 Flask
 seaborn
+hyperopt
