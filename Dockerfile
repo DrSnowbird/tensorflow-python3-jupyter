@@ -26,7 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 #### ---- pip3 Package installation ----
 COPY requirements.txt ./
-RUN pip3 --no-cache-dir install -r requirements.txt && \
+RUN pip3 install --upgrade pip && \
+    pip3 --no-cache-dir install -r requirements.txt && \
     python3 -m ipykernel.kernelspec 
 
 # Install TensorFlow CPU version from central repo
