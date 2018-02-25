@@ -11,3 +11,4 @@ scikit_learn
 Flask
 seaborn
 hyperopt
+keras
