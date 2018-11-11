@@ -3,7 +3,8 @@ services:
   tensorflow_python3_jupyter:
     image: openkbs/tensorflow-python3-jupyter
     build:
-      context: ./Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: tensorflow-python3-jupyter
     environment:
       - PASSWORD=${JUPYTER_PASSWORD:-password123}
