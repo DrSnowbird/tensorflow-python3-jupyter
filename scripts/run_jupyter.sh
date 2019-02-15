@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # MIT License
 #
 # Copyright (c) 2017 Jeremy Coatelen
@@ -20,26 +21,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # ==============================================================================
-import os
-from IPython.lib import passwd
 
-c.NotebookApp.ip = '*'
-c.NotebookApp.port = int(os.getenv('PORT', 8888))
-c.NotebookApp.open_browser = False
-c.MultiKernelManager.default_kernel_name = 'python3'
+env
 
-# sets a password if PASSWORD is set in the environment
-#if 'PASSWORD' in os.environ:
-#  c.NotebookApp.password = passwd(os.environ['PASSWORD'])
-#  del os.environ['PASSWORD']
+ls -al $HOME/.jupyter/*
+ls -al $HOME
 
-# sets a password if PASSWORD is set in the environment
-if not 'PASSWORD' in os.environ or os.environ['PASSWORD'] is None:
-    os.environ['PASSWORD']="password12345"
-    
-if 'PASSWORD' in os.environ:
-    c.NotebookApp.password = passwd(os.environ['PASSWORD'])
-    fp = open("/root/jupyter_password.txt", "w")
-    fp.write(os.environ['PASSWORD'])
-    fp.close()
-    #del os.environ['PASSWORD']
+cd $HOME/notebooks
+tensorboard --logdir $HOME/logs &
+#jupyter notebook "$@"
+jupyter notebook --ip="0.0.0.0" "$@"
