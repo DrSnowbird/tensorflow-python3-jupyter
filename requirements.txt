@@ -1,6 +1,4 @@
 pkgconfig
-ipykernel
-jupyter
 Pillow
 numpy
 scipy
@@ -12,3 +10,12 @@ Flask
 seaborn
 hyperopt
 keras
+langdetect
+tqdm
+nltk
+networkx
+gensim
+pyLDAvis
+ipykernel
+jupyter
+

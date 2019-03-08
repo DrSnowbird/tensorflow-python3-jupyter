@@ -1,10 +1,14 @@
-FROM openkbs/jdk-mvn-py3
+FROM openkbs/jdk-mvn-py3:non-root-beta
 #FROM ubuntu:16.04
 
 MAINTAINER OpenKBS <DrSnowbird@openkbs.org>
 
+USER ${USER}
+WORKDIR ${HOME}
+
 #### ---- Install some Tensorflow dependencies ----
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN sudo apt-get update && \
+    sudo apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     libfreetype6-dev \
@@ -22,42 +26,63 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     pkg-config libpcre3-dev zlib1g-dev liblzma-dev \
     && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    sudo apt-get clean && \
+    sudo rm -rf /var/lib/apt/lists/*
 
-#### ---- pip3 Package installation ----
+###################################
+#### ----   PIP modules: ----  ####
+###################################
+#### ---- pip3 Package installation ---- ####
 COPY requirements.txt ./
-#RUN pip3 install --upgrade pip && \
-RUN pip3 --no-cache-dir install -r requirements.txt && \
-    python3 -m ipykernel.kernelspec 
 
-# Install TensorFlow CPU version from central repo
-RUN pip3 --no-cache-dir install --upgrade tensorflow
+RUN sudo -H pip3 --no-cache-dir install --ignore-installed -U -r requirements.txt
+RUN sudo -H pip3 install -U matplotlib && \
+    sudo -H pip3 install --ignore-installed scipy notebook && \
+    sudo python3 -m ipykernel.kernelspec && \
+    sudo pip --no-cache-dir install --upgrade pip && \
+    sudo pip3 --no-cache-dir install --upgrade pip 
 
+##################################
+#### ----   Tensorflow: ----  ####
+##################################
+
+#### ---- Install TensorFlow CPU version from central repo ---- ####
+RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
+    sudo -H pip3 --no-cache-dir install --upgrade tensorflow && \
+    python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
+
+# system-wide install
+RUN sudo apt update -y && \
+    sudo apt install python3-dev python3-pip && \
+    sudo -H pip3 --no-cache-dir install -U virtualenv 
+    
+#### ---- Ref: https://www.tensorflow.org/install/pip ---- ####
+RUN virtualenv --system-site-packages -p python3 ./venv && \
+    . ./venv/bin/activate  # sh, bash, ksh, or zsh && \
+    pip install --upgrade pip && \
+    pip list  # show packages installed within the virtual environment
+    
 ##################################
 #### Set up user environments ####
 ##################################
 
-#### ---------------------
-#### ---- USER, GROUP ----
-#### ---------------------
-ENV USER_ID=${USER:-1000}
-ENV GROUP_ID=${GROUP:-1000}
-ENV USER=developer
-ENV HOME=/home/${USER}
+## #### ---------------------
+## #### ---- USER, GROUP ----
+## #### ---------------------
+## ENV USER_ID=${USER:-1000}
+## ENV GROUP_ID=${GROUP:-1000}
+## ENV USER=developer
+## ENV HOME=/home/${USER}
 
-RUN groupadd ${USER} && useradd ${USER} -m -d ${HOME} -s /bin/bash -g ${USER} && \
-    ## -- Ubuntu -- \
-    usermod -aG sudo ${USER} && \
-    ## -- Centos -- \
-    #usermod -aG wheel ${USER} && \
-    echo "${USER} ALL=NOPASSWD:ALL" | tee -a /etc/sudoers && \
-    chown ${USER}:${USER} -R ${HOME}
+## RUN groupadd ${USER} && useradd ${USER} -m -d ${HOME} -s /bin/bash -g ${USER} && \
+##     ## -- Ubuntu -- \
+##     usermod -aG sudo ${USER} && \
+##     ## -- Centos -- \
+##     #usermod -aG wheel ${USER} && \
+##     echo "${USER} ALL=NOPASSWD:ALL" | tee -a /etc/sudoers && \
+##     chown ${USER}:${USER} -R ${HOME}
     
 RUN echo "USER =======> ${USER}"
-
-USER ${USER}
-WORKDIR ${HOME}
 
 ENV WORKSPACE=${HOME}/workspace
 ENV DATA=${HOME}/data
@@ -78,11 +103,14 @@ COPY notebooks $HOME/notebooks
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062
 # We just add a little wrapper script.
-COPY ./scripts/run_jupyter.sh $HOME/
+ADD ./scripts $HOME/scripts
+COPY ./scripts/run_jupyter.sh /run_jupyter.sh
 
-RUN sudo chown -R ${USER}:${USER} $HOME && chmod +x $HOME/run_jupyter.sh && \
+RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
+    sudo chmod +x $HOME/scripts/*.sh /run_jupyter.sh && \
+    sudo usermod -aG root $USER && \
     mkdir $HOME/logs && \
-    pip3 install --upgrade pip
+    sudo ls -al /usr 
 
 # Expose Ports for TensorBoard (6006), Ipython (8888)
 EXPOSE 6006
@@ -94,5 +122,5 @@ VOLUME $HOME/logs
 
 WORKDIR "$HOME/notebooks"
 
-CMD "$HOME/run_jupyter.sh"
+CMD "$HOME/scripts/run_jupyter.sh"
 #CMD ["/run_jupyter.sh", "--allow-root"]

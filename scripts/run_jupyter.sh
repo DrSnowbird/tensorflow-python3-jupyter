@@ -29,5 +29,10 @@ ls -al $HOME
 
 cd $HOME/notebooks
 tensorboard --logdir $HOME/logs &
+
+# Install widgets nbextension
+#jupyter nbextension enable --py --sys-prefix widgetsnbextension
+#jupyter serverextension enable --py jupyterlab --user 
+jupyter nbextension enable --py --user widgetsnbextension
 #jupyter notebook "$@"
 jupyter notebook --ip="0.0.0.0" "$@"
