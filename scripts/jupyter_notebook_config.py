@@ -39,6 +39,7 @@ if not 'PASSWORD' in os.environ or os.environ['PASSWORD'] is None:
     
 if 'PASSWORD' in os.environ:
     c.NotebookApp.password = passwd(os.environ['PASSWORD'])
+    print("Password file at " + os.environ['JUPYTER_CONF_DIR'] + "/jupyter_password.txt")
     fp = open(os.environ['JUPYTER_CONF_DIR']+"/jupyter_password.txt", "w")
     fp.write(os.environ['PASSWORD'])
     fp.close()

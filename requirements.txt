@@ -1,13 +1,4 @@
-pkgconfig
-Pillow
-numpy
-scipy
-panda
-pandasql
-matplotlib
-scikit_learn
-Flask
-seaborn
+# NLP Processing
 hyperopt
 keras
 langdetect
@@ -16,6 +7,4 @@ nltk
 networkx
 gensim
 pyLDAvis
-ipykernel
-jupyter
 

@@ -62,26 +62,15 @@ RUN virtualenv --system-site-packages -p python3 ./venv && \
     pip install --upgrade pip && \
     pip list  # show packages installed within the virtual environment
     
+RUN sudo chown -R ${USER}:${USER} ${HOME}
+
+## -- added Local PIP installation bin to PATH
+ENV PATH=${PATH}:${HOME}/.local/bin
+
 ##################################
 #### Set up user environments ####
 ##################################
 
-## #### ---------------------
-## #### ---- USER, GROUP ----
-## #### ---------------------
-## ENV USER_ID=${USER:-1000}
-## ENV GROUP_ID=${GROUP:-1000}
-## ENV USER=developer
-## ENV HOME=/home/${USER}
-
-## RUN groupadd ${USER} && useradd ${USER} -m -d ${HOME} -s /bin/bash -g ${USER} && \
-##     ## -- Ubuntu -- \
-##     usermod -aG sudo ${USER} && \
-##     ## -- Centos -- \
-##     #usermod -aG wheel ${USER} && \
-##     echo "${USER} ALL=NOPASSWD:ALL" | tee -a /etc/sudoers && \
-##     chown ${USER}:${USER} -R ${HOME}
-    
 RUN echo "USER =======> ${USER}"
 
 ENV WORKSPACE=${HOME}/workspace
