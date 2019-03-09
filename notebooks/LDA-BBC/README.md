@@ -1,2 +1,3 @@
 # Code from my Medium articles
-Make sure to have Jupyter Notebook installed, sit back and shift enter ;)
+
+* This notebook is from https://github.com/DrSnowbird/MediumArticles 
