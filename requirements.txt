@@ -1,10 +1,19 @@
 # NLP Processing
-hyperopt
-keras
-langdetect
-tqdm
 nltk
 networkx
 gensim
-pyLDAvis
 
+# NLP Toolkit
+nltk
+tqdm
+
+# ML Packages
+keras
+
+# Spark, PySpark
+findspark
+Flask
+gensim
+langdetect
+networkx
+pyspark

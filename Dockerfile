@@ -35,9 +35,10 @@ RUN sudo apt-get update && \
 #### ---- pip3 Package installation ---- ####
 COPY requirements.txt ./
 
-RUN sudo -H pip3 --no-cache-dir install --ignore-installed -U -r requirements.txt
-RUN sudo -H pip3 install -U matplotlib && \
-    sudo -H pip3 install --ignore-installed scipy notebook && \
+RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
+    sudo -H pip3 --no-cache-dir install --ignore-installed -U -r requirements.txt
+RUN sudo -H pip3 --no-cache-dir install -U matplotlib && \
+    sudo -H pip3 --no-cache-dir install --ignore-installed notebook && \
     sudo python3 -m ipykernel.kernelspec && \
     sudo pip --no-cache-dir install --upgrade pip && \
     sudo pip3 --no-cache-dir install --upgrade pip 
@@ -98,18 +99,33 @@ COPY ./scripts/run_jupyter.sh /run_jupyter.sh
 RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
     sudo chmod +x $HOME/scripts/*.sh /run_jupyter.sh && \
     sudo usermod -aG root $USER && \
-    mkdir $HOME/logs && \
-    sudo ls -al /usr 
+    mkdir -p $HOME/logs $HOME/notebooks && \
+    sudo ls -al /usr
+
+#### ---- Spark & PySpark Setup ---- ####
+# ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
+#
+ENV SPARK_VERSION=2.4.0
+ENV HADOOP_VERSION=2.7
+ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
+ENV SPARK_HOME=/opt/spark
+ENV PATH=${SPARK_HOME}/bin:$PATH
+# https://www-us.apache.org/dist/spark/spark-2.4.0/spark-2.4.0-bin-hadoop2.7.tgz
+ENV SPARK_HADOOP_TGZ_URL=https://www-us.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
+RUN wget -q ${SPARK_HADOOP_TGZ_URL} && \
+    sudo tar -xzf $(basename ${SPARK_HADOOP_TGZ_URL}) -C /opt/ && \
+    sudo ln -s /opt/${SPARK_HADOOP} ${SPARK_HOME} && \
+    echo -e "export PYSPARK_DRIVER_PYTHON=jupyter \nexport PYSPARK_DRIVER_PYTHON_OPTS='notebook'" >> ${HOME}/.bashrc
 
 # Expose Ports for TensorBoard (6006), Ipython (8888)
 EXPOSE 6006
 EXPOSE 8888
 
 VOLUME $HOME/data
-VOLUME $HOME/notebooks
+VOLUME $HOME/workspace
 VOLUME $HOME/logs
 
 WORKDIR "$HOME/notebooks"
 
-CMD "$HOME/scripts/run_jupyter.sh"
+CMD ["/run_jupyter.sh"]
 #CMD ["/run_jupyter.sh", "--allow-root"]
