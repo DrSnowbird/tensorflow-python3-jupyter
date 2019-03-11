@@ -2,7 +2,7 @@
 
 # Note this fork GIT modify the parent GIT with the followings
 * Launch the **Tensorboard Web GUI server** (at port 26006 as default)
-* Launch the **Tensorflow-Python3-Jupyter server** (at port 28008 as default)
+* Launch the **Tensorflow-Python3-Jupyter server** (at port 28888 as default)
 * Added Python3 Tensorflow examples from the forked GIT, "git@github.com:DrSnowbird/TensorFlow-Examples.git (forked from its parent aymericdamien/TensorFlow-Examples" (I corrected some of the syntax for print to be Python3 - but not completed done for all notebook yet)
 
 # Spark Notebook alternative
