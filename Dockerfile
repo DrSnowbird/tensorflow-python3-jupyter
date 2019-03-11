@@ -1,4 +1,4 @@
-FROM openkbs/jdk-mvn-py3:non-root-beta
+FROM openkbs/jdk-mvn-py3
 #FROM ubuntu:16.04
 
 MAINTAINER OpenKBS <DrSnowbird@openkbs.org>
