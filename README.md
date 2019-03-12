@@ -63,8 +63,16 @@ or
 ```
 docker-compose up -d
 ```
-
+Once it is up, you can access it with:
 * The default Jupyter password is (unless you change it in `docker.env` file): `ChangeMe!`
+```
+http://<IP_Address>:28888/ (Juypter Notebook)
+http://<IP_Address>:26006/ (Jupyter Tensorboard)
+```
+Where <IP_Address> will be:
+- If running locally: `localhost`, `127.0.0.1`
+- If running with Openshift: then find out the domain name that OpenShift has for this container
+
 
 # What if I need more PIP modules/packages?
 1. Enter the Container
