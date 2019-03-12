@@ -27,7 +27,11 @@ env
 ls -al $HOME/.jupyter/*
 ls -al $HOME
 
+#cp -r --no-clobber $HOME/example-notebooks/* $HOME/notebooks/
+rsync -a -v --ignore-existing $HOME/example-notebooks $HOME/notebooks
+
 cd $HOME/notebooks
+
 tensorboard --logdir $HOME/logs &
 
 # pyspark &

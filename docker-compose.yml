@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: tensorflow-python3-jupyter
     environment:
-      - PASSWORD=${JUPYTER_PASSWORD:-password123}
+      - PASSWORD=${JUPYTER_PASSWORD:-ChangeMe!}
     ports:
       - 26006:6006
       - 28888:8888
@@ -15,6 +15,6 @@ services:
       - ./docker.env
     volumes:
       - $HOME/data-docker/tensorflow-python3-jupyter/data:/data
-      - ./notebooks/mybooks:/notebooks/mybooks
+      - $HOME/data-docker/tensorflow-python3-jupyter/notebooks:/notebooks
       - $HOME/data-docker/tensorflow-python3-jupyter/logs:/logs
 

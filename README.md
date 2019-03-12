@@ -64,9 +64,24 @@ or
 docker-compose up -d
 ```
 
-The login default (unless you change it in `docker-run.env` file): `ChangeMe!`
+* The default Jupyter password is (unless you change it in `docker.env` file): `ChangeMe!`
 
-# References
+# What if I need more PIP modules/packages?
+1. Enter the Container
+```
+./shell.sh
+```
+2. Install the new PIP module, e.g.,
+```
+sudo pip install nose
+sudo pip install IPython
+sudo pip install pyGtk
+sudo pip install Scrapy
+. . . etc.
+```
+If you are using OpenShift / Origin Contaier Platform, you can use the Web UI to enter the Container's Console and then run the above PIP installation.
+
+# Resources & References
 * [Jupyter Notebook](https://jupyter.org/)
 * [TensorFlow](https://www.tensorflow.org/)
 * [scikit-learn](http://scikit-learn.org/stable/)
@@ -76,16 +91,20 @@ The login default (unless you change it in `docker-run.env` file): `ChangeMe!`
 * [scipy](https://www.scipy.org/)
 * [Pillow](https://pillow.readthedocs.io/en/4.1.x/)
 * [Python 2 and 3](https://www.python.org/)
+* [Gensim - Topic Modeling for Humans](https://radimrehurek.com/gensim/)
+* [Text Analytics for Beginners using NLTK](https://www.datacamp.com/community/tutorials/text-analytics-beginners-nltk)
 
 Note: the jupyter notebooks are only based on Python 3 kernels as default.
 
 # See Also - docker-based IDE
+* [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin): Spark (Scala/Java) Cluster with Spark ML/MLlib + Hadoop (HDFS)
 * [openkbs/atom-docker](https://hub.docker.com/r/openkbs/atom-docker/)
 * [openkbs/eclipse-oxygen-docker](https://hub.docker.com/r/openkbs/eclipse-oxygen-docker/)
 * [openkbs/eclipse-photon-docker](https://hub.docker.com/r/openkbs/eclipse-photon-docker/)
 * [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
 * [openkbs/intellj-docker](https://hub.docker.com/r/openkbs/intellij-docker/)
 * [openkbs/intellj-vnc-docker](https://hub.docker.com/r/openkbs/intellij-vnc-docker/)
+* [openkbs/knime-docker](https://hub.docker.com/r/openkbs/knime-docker/)
 * [openkbs/knime-vnc-docker](https://hub.docker.com/r/openkbs/knime-vnc-docker/)
 * [openkbs/netbeans10-docker](https://hub.docker.com/r/openkbs/netbeans10-docker/)
 * [openkbs/netbeans](https://hub.docker.com/r/openkbs/netbeans/)
@@ -97,6 +116,6 @@ Note: the jupyter notebooks are only based on Python 3 kernels as default.
 * [openkbs/webstorm-docker](https://hub.docker.com/r/openkbs/webstorm-docker/)
 * [openkbs/webstorm-vnc-docker](https://hub.docker.com/r/openkbs/webstorm-vnc-docker/)
 
-
+# Resources
 
 

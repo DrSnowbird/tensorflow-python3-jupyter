@@ -88,7 +88,7 @@ COPY ./scripts/jupyter_notebook_config.py ${JUPYTER_CONF_DIR}/
 RUN echo "`ls -al ${JUPYTER_CONF_DIR}/*`"
 
 # Copy sample notebooks.
-COPY notebooks $HOME/notebooks
+COPY notebooks $HOME/example-notebooks
 
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062
@@ -99,7 +99,7 @@ COPY ./scripts/run_jupyter.sh /run_jupyter.sh
 RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
     sudo chmod +x $HOME/scripts/*.sh /run_jupyter.sh && \
     sudo usermod -aG root $USER && \
-    mkdir -p $HOME/logs $HOME/notebooks && \
+    mkdir -p $HOME/logs $HOME/data $HOME/workspace $HOME/notebooks && \
     sudo ls -al /usr
 
 #### ---- Spark & PySpark Setup ---- ####
@@ -115,7 +115,8 @@ ENV SPARK_HADOOP_TGZ_URL=https://www-us.apache.org/dist/spark/spark-${SPARK_VERS
 RUN wget -q ${SPARK_HADOOP_TGZ_URL} && \
     sudo tar -xzf $(basename ${SPARK_HADOOP_TGZ_URL}) -C /opt/ && \
     sudo ln -s /opt/${SPARK_HADOOP} ${SPARK_HOME} && \
-    echo -e "export PYSPARK_DRIVER_PYTHON=jupyter \nexport PYSPARK_DRIVER_PYTHON_OPTS='notebook'" >> ${HOME}/.bashrc
+    echo "export PYSPARK_DRIVER_PYTHON=jupyter \nexport PYSPARK_DRIVER_PYTHON_OPTS='notebook'" >> ${HOME}/.bashrc && \
+    rm -f ${SPARK_HADOOP_TGZ_URL}
 
 # Expose Ports for TensorBoard (6006), Ipython (8888)
 EXPOSE 6006
@@ -124,6 +125,7 @@ EXPOSE 8888
 VOLUME $HOME/data
 VOLUME $HOME/workspace
 VOLUME $HOME/logs
+VOLUME $HOME/notebooks
 
 WORKDIR "$HOME/notebooks"
 
