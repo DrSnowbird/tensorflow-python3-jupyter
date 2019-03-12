@@ -3,10 +3,9 @@
 # Note this fork GIT modify the parent GIT with the followings
 * Launch the **Tensorboard Web GUI server** (at port 26006 as default)
 * Launch the **Tensorflow-Python3-Jupyter server** (at port 28888 as default)
-* Added Python3 Tensorflow examples from the forked GIT, "git@github.com:DrSnowbird/TensorFlow-Examples.git (forked from its parent aymericdamien/TensorFlow-Examples" (I corrected some of the syntax for print to be Python3 - but not completed done for all notebook yet)
 
-# Spark Notebook alternative
-We also provide Spark Zeppelin notebook local cluster [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Scala/Java and Python data science users' needs.
+# Zeppelin Notebooks as alternative to Jupyter Notebooks
+We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
 
 # Components:
 * java version "1.8.0_202"
