@@ -27,7 +27,7 @@ env
 ls -al $HOME/.jupyter/*
 ls -al $HOME
 
-sudo chmod -R ${USER}:${USER} $HOME/notebooks
+sudo chmod -R go+w $HOME/notebooks
 
 cd $HOME
 
