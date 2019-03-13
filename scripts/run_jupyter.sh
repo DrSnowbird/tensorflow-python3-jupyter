@@ -27,9 +27,7 @@ env
 ls -al $HOME/.jupyter/*
 ls -al $HOME
 
-cp -r --no-clobber $HOME/example-notebooks/* $HOME/notebooks/
-# Use cp instead of below
-#rsync -a -v --ignore-existing $HOME/example-notebooks $HOME/notebooks
+sudo chown -R ${USER}:${USER} $HOME/notebooks
 
 cd $HOME/notebooks
 
