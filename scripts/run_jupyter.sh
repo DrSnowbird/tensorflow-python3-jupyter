@@ -27,9 +27,9 @@ env
 ls -al $HOME/.jupyter/*
 ls -al $HOME
 
-sudo chown -R ${USER}:${USER} $HOME/notebooks
+sudo chmod -R ${USER}:${USER} $HOME/notebooks
 
-cd $HOME/notebooks
+cd $HOME
 
 tensorboard --logdir $HOME/logs &
 

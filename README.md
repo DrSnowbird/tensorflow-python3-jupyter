@@ -19,7 +19,7 @@ We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https:
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
 # PIP Components installed as default:
-This container choose defaults components including NLP
+This container chose defauls components including NLP as:
 ```
 Flask
 future
@@ -60,6 +60,7 @@ Two ways to run:
 ```
 or
 ```
+docker pull openkbs/tensorflow-python3-jupyter
 docker-compose up -d
 ```
 Once it is up, you can access it with:
@@ -68,7 +69,7 @@ Once it is up, you can access it with:
 http://<IP_Address>:28888/ (Juypter Notebook)
 http://<IP_Address>:26006/ (Jupyter Tensorboard)
 ```
-Where <IP_Address> will be:
+Where `IP_Address` will be:
 - If running locally: `localhost`, `127.0.0.1`
 - If running with Openshift: then find out the domain name that OpenShift has for this container
 
