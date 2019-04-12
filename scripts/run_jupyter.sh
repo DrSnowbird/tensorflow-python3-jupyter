@@ -21,13 +21,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # ==============================================================================
-
 env
 
-ls -al $HOME/.jupyter/*
-ls -al $HOME
+id
+whoami
 
-sudo chmod -R go+w $HOME/notebooks
+#### ---- OpenSSL Self-Signed Certificate ---- ####
+SSL_CERT=$HOME/mycert.pem
+SSL_KEY=$HOME/mykey.key
+function setupSSL() {
+    ## -- setup certificate
+    if [ ! -x ./${SSL_CERT} ]; then
+        openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout ${SSL_KEY} -out ${SSL_CERT} -batch
+    fi
+}
+
+sudo chmod -R go+w $HOME/notebooks $HOME/.jupyter
+ls -al $HOME
+ls -al $HOME/.jupyter/*
+ls -al $HOME/notebooks
 
 cd $HOME
 
@@ -39,5 +51,8 @@ tensorboard --logdir $HOME/logs &
 #jupyter nbextension enable --py --sys-prefix widgetsnbextension
 #jupyter serverextension enable --py jupyterlab --user 
 jupyter nbextension enable --py --user widgetsnbextension
+
+setupSSL
+
 #jupyter notebook "$@"
-jupyter notebook --ip="0.0.0.0" "$@"
+jupyter notebook --ip="0.0.0.0" "$@" --certfile=${SSL_CERT} --keyfile=${SSL_KEY}

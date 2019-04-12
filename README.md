@@ -1,4 +1,4 @@
-# Tensorflow + Python3 + Jupyter + Spark + PySpark
+# Tensorflow + Python3 + Jupyter + Spark 2.4.1 + PySpark + Hadoop 2.7
 
 # Note this fork GIT modify the parent GIT with the followings
 * Launch the **Tensorboard Web GUI server** (at port 26006 as default)
@@ -15,7 +15,7 @@ We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https:
 * Python 3.5.2 / Python 2.7.12 + pip 19.0.2
 * Node v11.9.0 + npm 6.5.0 (from NodeSource official Node Distribution)
 * Gradle 5.1
-* Spark 2.4.0 + Hadoop 2.7
+* Spark 2.4.1 + Hadoop 2.7
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
 # PIP Components installed as default:
@@ -66,7 +66,7 @@ docker-compose up -d
 Once it is up, you can access it with:
 * The default Jupyter password is (unless you change it in `docker.env` file): `ChangeMe!`
 ```
-http://<IP_Address>:28888/ (Juypter Notebook)
+https://<IP_Address>:28888/ (Juypter Notebook)
 http://<IP_Address>:26006/ (Jupyter Tensorboard)
 ```
 Where `IP_Address` will be:
@@ -123,7 +123,4 @@ Note: the jupyter notebooks are only based on Python 3 kernels as default.
 * [openkbs/sublime-docker](https://hub.docker.com/r/openkbs/sublime-docker/)
 * [openkbs/webstorm-docker](https://hub.docker.com/r/openkbs/webstorm-docker/)
 * [openkbs/webstorm-vnc-docker](https://hub.docker.com/r/openkbs/webstorm-vnc-docker/)
-
-# Resources
-
 

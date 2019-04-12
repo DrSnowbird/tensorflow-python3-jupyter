@@ -54,8 +54,16 @@ RESTART_OPTION=no
 ## More optional values:
 ##   Add any additional options here
 ## ------------------------------------------------------------------------
-# MORE_OPTIONS="--privileged=true"
-MORE_OPTIONS=
+#MORE_OPTIONS="--privileged=true"
+MORE_OPTIONS=""
+
+## ------------------------------------------------------------------------
+## Multi-media optional values:
+##   Add any additional options here
+## ------------------------------------------------------------------------
+#MEDIA_OPTIONS=" --device /dev/snd --device /dev/dri  --device /dev/video0  --group-add audio  --group-add video "
+MEDIA_OPTIONS=" --device /dev/snd --device /dev/dri  --group-add audio  --group-add video "
+#MEDIA_OPTIONS=
 
 ###############################################################################
 ###############################################################################
@@ -268,17 +276,33 @@ function generateVolumeMapping() {
                 if [ $DEBUG -gt 0 ]; then ls -al `pwd`/${left}; fi
             else
                 ## No "./data" on the left
-                if [[ ${right} == "/"* ]]; then
-                    ## -- pattern like: "data:/containerPath/data"
-                    debug "-- pattern like ./data:/data --"
-                    VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${right}"
+                if [ "$leftHasAbsPath" != "" ]; then
+                    ## Has pattern like "/data" on the left
+                    if [[ ${right} == "/"* ]]; then
+                        ## -- pattern like: "/data:/containerPath/data"
+                        debug "-- pattern like /data:/containerPath/data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${left}:${right}"
+                    else
+                        ## -- pattern like: "/data:data"
+                        debug "-- pattern like /data:data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${left}:${DOCKER_VOLUME_DIR}/${right}"
+                    fi
+                    mkdir -p ${LOCAL_VOLUME_DIR}/${left}
+                    if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
                 else
-                    ## -- pattern like: "data:data"
-                    debug "-- pattern like data:data --"
-                    VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${DOCKER_VOLUME_DIR}/${right}"
+                    ## No pattern like "/data" on the left
+                    if [[ ${right} == "/"* ]]; then
+                        ## -- pattern like: "data:/containerPath/data"
+                        debug "-- pattern like ./data:/data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${right}"
+                    else
+                        ## -- pattern like: "data:data"
+                        debug "-- pattern like data:data --"
+                        VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/${left}:${DOCKER_VOLUME_DIR}/${right}"
+                    fi
+                    mkdir -p ${LOCAL_VOLUME_DIR}/${left}
+                    if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
                 fi
-                mkdir -p ${LOCAL_VOLUME_DIR}/${left}
-                if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
             fi
         else
             ## -- pattern like: "data"
@@ -388,13 +412,13 @@ function generateProxyEnv() {
         PROXY_PARAM="${PROXY_PARAM} -e NO_PROXY=\"${NO_PROXY}\""
     fi
     if [ "${http_proxy}" != "" ]; then
-        PROXY_PARAM="${PROXY_PARAM} -e HTTP_PROXY=${http_proxy}"
+        PROXY_PARAM="${PROXY_PARAM} -e http_proxy=${http_proxy}"
     fi
     if [ "${https_proxy}" != "" ]; then
-        PROXY_PARAM="${PROXY_PARAM} -e HTTPS_PROXY=${https_proxy}"
+        PROXY_PARAM="${PROXY_PARAM} -e https_proxy=${https_proxy}"
     fi
     if [ "${no_proxy}" != "" ]; then
-        PROXY_PARAM="${PROXY_PARAM} -e NO_PROXY=\"${no_proxy}\""
+        PROXY_PARAM="${PROXY_PARAM} -e no_proxy=\"${no_proxy}\""
     fi
     ENV_VARS="${ENV_VARS} ${PROXY_PARAM}"
 }
@@ -423,8 +447,8 @@ echo ${privilegedString}
 #### ---- Mostly, you don't need change below ----
 ###################################################
 function cleanup() {
-    if [ ! "`docker ps -a|grep ${instanceName}`" == "" ]; then
-         docker rm -f ${instanceName}
+    if [ ! "`sudo docker ps -a|grep ${instanceName}`" == "" ]; then
+         sudo docker rm -f ${instanceName}
     fi
 }
 
@@ -514,11 +538,42 @@ echo "  ./build.sh : to build the container"
 echo "  ./commit.sh: to push the container image to docker hub"
 echo "--------------------------------------------------------"
 
+#################################
+## ---- Setup X11 Display -_-- ##
+#################################
+function setupDisplayType() {
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        # ...
+        xhost +SI:localuser:$(id -un) 
+        xhost + ${MY_IP}
+        xhost + 127.0.0.1
+        export DISPLAY=${MY_IP}:0 
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # Mac OSX
+        xhost + 127.0.0.1
+        export DISPLAY=host.docker.internal:0
+    elif [[ "$OSTYPE" == "cygwin" ]]; then
+        # POSIX compatibility layer and Linux environment emulation for Windows
+        export DISPLAY=${MY_IP}:0 
+    elif [[ "$OSTYPE" == "msys" ]]; then
+        # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
+        export DISPLAY=${MY_IP}:0 
+    elif [[ "$OSTYPE" == "freebsd"* ]]; then
+        # ...
+        export DISPLAY=${MY_IP}:0 
+    else
+        # Unknown.
+        echo "Unknown OS TYPE: $OSTYPE! Not supported!"
+        exit 9
+    fi
+    echo ${DISPLAY}
+}
+
 case "${BUILD_TYPE}" in
     0)
         ## 0: (default) has neither X11 nor VNC/noVNC container build image type 
         set -x 
-        docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
+        sudo docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${privilegedString} \
@@ -531,14 +586,15 @@ case "${BUILD_TYPE}" in
     1)
         ## 1: X11/Desktip container build image type
         #### ---- for X11-based ---- ####
-        echo ${DISPLAY}
-        xhost +SI:localuser:$(id -un) 
-        set -x 
-        DISPLAY=${MY_IP}:0 \
-        docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
+        ##echo ${DISPLAY}
+        ##xhost +SI:localuser:$(id -un) 
+        ##set -x 
+        ##MORE_OPTIONS="${MORE_OPTIONS} -e DISPLAY=$DISPLAY -v $HOME/.chrome:/data -v /dev/shm:/dev/shm -v /etc/hosts:/etc/hosts"
+        ##DISPLAY=${MY_IP}:0
+        setupDisplayType
+        sudo docker run ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${MEDIA_OPTIONS}\
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
-            -e DISPLAY=$DISPLAY \
             -v /tmp/.X11-unix:/tmp/.X11-unix \
             ${privilegedString} \
             ${USER_VARS} \
@@ -558,7 +614,7 @@ case "${BUILD_TYPE}" in
             ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
         fi
         set -x 
-        docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
+        sudo docker run ${REMOVE_OPTION} ${MORE_OPTIONS} ${RUN_OPTION} \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${privilegedString} \
