@@ -1,8 +1,8 @@
-# Tensorflow + Python3 + Jupyter + Spark 2.4.1 + PySpark + Hadoop 2.7
+# Tensorflow + Python3 + Jupyter + Spark 2.4.2 + PySpark + Hadoop 2.7
 
-# Note this fork GIT modify the parent GIT with the followings
-* Launch the **Tensorboard Web GUI server** (at port 26006 as default)
-* Launch the **Tensorflow-Python3-Jupyter server** (at port 28888 as default)
+# NOTE: The latest update use `HTTPS (instead of HTTP)` for notebook (not Tensorboard) to increase security
+* Launch the **Tensorflow-Python3-Jupyter server** (`https://<ip>:28888/` as default)
+* Launch the **Tensorboard Web GUI server** (`http://<ip>:26006/` as default)
 
 # Zeppelin Notebooks as alternative to Jupyter Notebooks
 We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
@@ -15,7 +15,7 @@ We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https:
 * Python 3.5.2 / Python 2.7.12 + pip 19.0.2
 * Node v11.9.0 + npm 6.5.0 (from NodeSource official Node Distribution)
 * Gradle 5.1
-* Spark 2.4.1 + Hadoop 2.7
+* Spark 2.4.2 + Hadoop 2.7
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
 # PIP Components installed as default:
@@ -93,7 +93,7 @@ e.g.
 ```
 If you are using OpenShift / Origin Contaier Platform, you can use the Web UI to enter the '''Container's Console''' and then run the above Python package installation.
 
-# (Other way) to install more packages - Inside Juptyer Notebook
+# (Other way) to install more packages - Inside Jupyter Notebook
 ```
 # Install a pip package in the current Jupyter kernel
 import sys
