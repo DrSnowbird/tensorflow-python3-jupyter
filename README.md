@@ -1,58 +1,31 @@
 # Tensorflow + Python3 + Jupyter + Spark 2.4.2 + PySpark + Hadoop 2.7
 
-# NOTE: The latest update use `HTTPS (instead of HTTP)` for notebook (not Tensorboard) to increase security
-* Launch the **Tensorflow-Python3-Jupyter server** (`https://<ip>:28888/` as default)
+# NOTE: The latest update supported `HTTPS (instead of HTTP)` for Jupyter Notebook (not Tensorboard) to increase security
+* Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` or `https://<ip>:28888/`)
 * Launch the **Tensorboard Web GUI server** (`http://<ip>:26006/` as default)
 
+## To disable/enable HTTPS for Jupyter Notebook
+Just edit the "./docker-run.env" file's entry "ENABLE_HTTPS".
+The default now changes back to `HTTP` instead of `HTTPS`.
+```
+## -- true to enable HTTPS; false to disable HTTPS:
+#ENABLE_HTTPS=false
+ENABLE_HTTPS=true
+```
 # Zeppelin Notebooks as alternative to Jupyter Notebooks
 We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
 
 # Components:
-* java version "1.8.0_202"
-  Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
-  Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+* openjdk version "1.8.0_212"
+  OpenJDK Runtime Environment (build 1.8.0_212-8u212-b01-1~deb9u1-b01)
+  OpenJDK 64-Bit Server VM (build 25.212-b01, mixed mode)
 * Apache Maven 3.6.0
-* Python 3.5.2 / Python 2.7.12 + pip 19.0.2
-* Node v11.9.0 + npm 6.5.0 (from NodeSource official Node Distribution)
-* Gradle 5.1
+* Python 3.6 / Python 2.7 + pip 19.1 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
+* Node v11.15.0 + npm 6.7.0 (from NodeSource official Node Distribution)
+* Gradle 5.3
 * Spark 2.4.2 + Hadoop 2.7
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
-# PIP Components installed as default:
-This container chose defauls components including NLP as:
-```
-Flask
-future
-findspark
-gensim
-httpie
-hyperopt
-ipaddress
-ipykernel
-j2cli
-jinja2
-jupyter
-keras
-langdetect
-matplotlib
-networkx
-nltk
-numpy
-panda
-pandas
-pandasql
-Pillow
-pkgconfig
-pyLDAvis
-pyparsing
-requests
-scikit_learn
-scipy
-seaborn
-tqdm
-virtualenv
-virtualenvwrapper
-```
 # Run
 Two ways to run:
 ```
@@ -66,13 +39,20 @@ docker-compose up -d
 Once it is up, you can access it with:
 * The default Jupyter password is (unless you change it in `docker.env` file): `ChangeMe!`
 ```
-https://<IP_Address>:28888/ (Juypter Notebook)
+http://<IP_Address>:28888/ (Juypter Notebook)  -- if you disable HTTPS
+https://<IP_Address>:28888/ (Juypter Notebook)  -- if you enable HTTPS
 http://<IP_Address>:26006/ (Jupyter Tensorboard)
 ```
 Where `IP_Address` will be:
 - If running locally: `localhost`, `127.0.0.1`
 - If running with Openshift: then find out the domain name that OpenShift has for this container
 
+# How to change the default password?
+Edit the ./docker-run.env file, say, to change to MyNewPassword!
+```
+#### Don't use any quote to enclose the password since it (quotes) will be treated as part of the value!
+PASSWORD=StrongPassword
+```
 
 # What if I need more Python/PIP packages?
 1. Enter the Container
@@ -103,7 +83,18 @@ e.g.
     !{sys.executable} -m pip install numpy
 ```
 
+# Problem in Login
+Few reasons that your login password might not work:
+1. You have multiple place set password and they are inconsistent: just search "password" and "PASSWORD" for all the files in the folder - basically, docker-compose.yml, docker-run.sh, run-sh (if you modify it) files are key sources for setting up password for login.
+2. It might be your Chrome or browsers auto feed old password: To solve this problem, 
+Just launch a new "incognito windows" and then type URL as usuall:
+```
+http://<ip>:28888/  (if you disable HTTPS)
+or
+https://<ip>:28888/  (if you enable HTTPS)
+```
 # Resources & References
+* [TnesorFlow Tutorials](https://www.tensorflow.org/tutorials)
 * [Jupyter Notebook](https://jupyter.org/)
 * [TensorFlow](https://www.tensorflow.org/)
 * [scikit-learn](http://scikit-learn.org/stable/)
@@ -115,6 +106,8 @@ e.g.
 * [Python 2 and 3](https://www.python.org/)
 * [Gensim - Topic Modeling for Humans](https://radimrehurek.com/gensim/)
 * [Text Analytics for Beginners using NLTK](https://www.datacamp.com/community/tutorials/text-analytics-beginners-nltk)
+* [spaCy Notebooks](https://github.com/explosion/spacy-notebooks)
+* [spaCy models for training](https://spacy.io/usage/training)
 
 Note: the jupyter notebooks are only based on Python 3 kernels as default.
 
@@ -277,4 +270,67 @@ webencodings         0.5.1
 Werkzeug             0.15.2                
 wheel                0.33.1                
 widgetsnbextension   3.4.2                 
+```
+
+# Releases Information
+```
+developer@2368ba1413d1:~$ /usr/scripts/printVersions.sh 
++ echo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
++ java -version
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-8u212-b01-1~deb9u1-b01)
+OpenJDK 64-Bit Server VM (build 25.212-b01, mixed mode)
++ mvn --version
+Apache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z)
+Maven home: /usr/apache-maven-3.6.0
+Java version: 1.8.0_212, vendor: Oracle Corporation, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "4.18.0-25-generic", arch: "amd64", family: "unix"
++ python -V
+Python 2.7.13
++ python3 -V
+Python 3.5.3
++ pip --version
+pip 19.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
++ pip3 --version
+pip 19.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
++ gradle --version
+
+Welcome to Gradle 5.3.1!
+
+Here are the highlights of this release:
+ - Feature variants AKA "optional dependencies"
+ - Type-safe accessors in Kotlin precompiled script plugins
+ - Gradle Module Metadata 1.0
+
+For more details see https://docs.gradle.org/5.3.1/release-notes.html
+
+
+------------------------------------------------------------
+Gradle 5.3.1
+------------------------------------------------------------
+
+Build time:   2019-03-28 09:09:23 UTC
+Revision:     f2fae6ba563cfb772c8bc35d31e43c59a5b620c3
+
+Kotlin:       1.3.21
+Groovy:       2.5.4
+Ant:          Apache Ant(TM) version 1.9.13 compiled on July 10 2018
+JVM:          1.8.0_212 (Oracle Corporation 25.212-b01)
+OS:           Linux 4.18.0-25-generic amd64
+
++ npm -v
+6.7.0
++ node -v
+v11.14.0
++ cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+NAME="Debian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
 ```

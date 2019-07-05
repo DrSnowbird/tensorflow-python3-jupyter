@@ -12,7 +12,7 @@ RUN sudo apt-get update && \
     build-essential \
     curl \
     libfreetype6-dev \
-    libpng12-dev \
+    libpng-dev \
     libzmq3-dev \
     pkg-config \
     python \
@@ -50,6 +50,7 @@ RUN sudo -H pip3 --no-cache-dir install -U matplotlib && \
 #### ---- Install TensorFlow CPU version from central repo ---- ####
 RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
     sudo -H pip3 --no-cache-dir install --upgrade tensorflow && \
+    python3 -c "import tensorflow as tf; print('TensorFlow version {} is installed.'.format(tf.VERSION))" && \
     python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
 
 # system-wide install
@@ -104,13 +105,13 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 #### ---- Spark & PySpark Setup ---- ####
 # ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
 #
-ENV SPARK_VERSION=2.4.2
+ENV SPARK_VERSION=2.4.3
 ENV HADOOP_VERSION=2.7
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV PATH=${SPARK_HOME}/bin:$PATH
 
-#https://www-us.apache.org/dist/spark/spark-2.4.2/spark-2.4.2-bin-hadoop2.7.tgz
+# https://www-us.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
 ENV SPARK_HADOOP_TGZ_URL=https://www-us.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 RUN wget -q ${SPARK_HADOOP_TGZ_URL} && \
     sudo tar -xzf $(basename ${SPARK_HADOOP_TGZ_URL}) -C /opt/ && \
@@ -129,5 +130,5 @@ VOLUME $HOME/notebooks
 
 WORKDIR "$HOME"
 
-CMD ["/run_jupyter.sh"]
-#CMD ["/run_jupyter.sh", "--allow-root"]
+#CMD ["/run_jupyter.sh"]
+CMD ["/run_jupyter.sh", "--allow-root"]

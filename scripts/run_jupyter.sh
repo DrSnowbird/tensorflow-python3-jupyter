@@ -27,14 +27,17 @@ id
 whoami
 
 #### ---- OpenSSL Self-Signed Certificate ---- ####
-SSL_CERT=$HOME/mycert.pem
-SSL_KEY=$HOME/mykey.key
+SSL_DIR=$HOME/.cert
+SSL_CERT=$SSL_DIR/mycert.pem
+SSL_KEY=$SSL_DIR/mykey.key
+mkdir -p $SSL_DIR
 function setupSSL() {
     ## -- setup certificate
-    if [ ! -x ./${SSL_CERT} ]; then
+    if [ ! -x ${SSL_CERT} ]; then
         openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout ${SSL_KEY} -out ${SSL_CERT} -batch
     fi
 }
+setupSSL
 
 sudo chmod -R go+w $HOME/notebooks $HOME/.jupyter
 ls -al $HOME
@@ -52,7 +55,11 @@ tensorboard --logdir $HOME/logs &
 #jupyter serverextension enable --py jupyterlab --user 
 jupyter nbextension enable --py --user widgetsnbextension
 
-setupSSL
-
 #jupyter notebook "$@"
-jupyter notebook --ip="0.0.0.0" "$@" --certfile=${SSL_CERT} --keyfile=${SSL_KEY}
+
+ENABLE_HTTPS=`echo $ENABLE_HTTPS |tr '[:upper:]' '[:lower:]'`
+if [ "$ENABLE_HTTPS" = "true" ]; then
+    jupyter notebook --ip="0.0.0.0" "$@" --certfile=${SSL_CERT} --keyfile=${SSL_KEY}
+else
+    jupyter notebook --ip="0.0.0.0" "$@" 
+fi

@@ -6,6 +6,7 @@ gensim
 # NLP Toolkit
 nltk
 tqdm
+spacy
 
 # ML Packages
 keras
