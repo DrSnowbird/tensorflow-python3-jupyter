@@ -47,8 +47,8 @@ USER_VARS_NEEDED=0
 ## Valid "RESTART_OPTION" values:
 ##  { no, on-failure, unless-stopped, always }
 ## ------------------------------------------------------------------------
-#RESTART_OPTION=no
-RESTART_OPTION=unless-stopped
+RESTART_OPTION=no
+#RESTART_OPTION=unless-stopped
 
 ## ------------------------------------------------------------------------
 ## More optional values:

@@ -1,16 +1,16 @@
-# Tensorflow + Python3 + Jupyter + Spark 2.4.2 + PySpark + Hadoop 2.7
+# Tensorflow + Python3 + Jupyter + Spark 2.4.3 + PySpark + Hadoop 2.7
 
-# NOTE: The latest update supported `HTTPS (instead of HTTP)` for Jupyter Notebook (not Tensorboard) to increase security
-* Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` or `https://<ip>:28888/`)
+# NOTE: The latest update supported `HTTPS (as default)` for Jupyter Notebook to increase security:
+* Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` or `https://<ip>:28888/` - default)
 * Launch the **Tensorboard Web GUI server** (`http://<ip>:26006/` as default)
 
 ## To disable/enable HTTPS for Jupyter Notebook
-Just edit the "./docker-run.env" file's entry "ENABLE_HTTPS".
-The default now changes back to `HTTP` instead of `HTTPS`.
+Just edit the `./docker-run.env` file's entry "ENABLE_HTTPS".
+The following changes back to `HTTP` instead of `HTTPS`.
 ```
 ## -- true to enable HTTPS; false to disable HTTPS:
-#ENABLE_HTTPS=false
-ENABLE_HTTPS=true
+ENABLE_HTTPS=false
+#ENABLE_HTTPS=true
 ```
 # Zeppelin Notebooks as alternative to Jupyter Notebooks
 We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
@@ -23,7 +23,7 @@ We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https:
 * Python 3.6 / Python 2.7 + pip 19.1 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
 * Node v11.15.0 + npm 6.7.0 (from NodeSource official Node Distribution)
 * Gradle 5.3
-* Spark 2.4.2 + Hadoop 2.7
+* Spark 2.4.3 + Hadoop 2.7
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
 
 # Run
@@ -43,9 +43,9 @@ http://<IP_Address>:28888/ (Juypter Notebook)  -- if you disable HTTPS
 https://<IP_Address>:28888/ (Juypter Notebook)  -- if you enable HTTPS
 http://<IP_Address>:26006/ (Jupyter Tensorboard)
 ```
-Where `IP_Address` will be:
-- If running locally: `localhost`, `127.0.0.1`
-- If running with Openshift: then find out the domain name that OpenShift has for this container
+Where `<IP_Address>` will be:
+- If running locally: `localhost`, `0.0.0.0`, `127.0.0.1`, or host's IP address.
+- If running with Openshift: then find out the domain name that OpenShift has created for this container.
 
 # How to change the default password?
 Edit the ./docker-run.env file, say, to change to MyNewPassword!
@@ -71,7 +71,7 @@ e.g.
     sudo pip install Scrapy
     . . . etc.
 ```
-If you are using OpenShift / Origin Contaier Platform, you can use the Web UI to enter the '''Container's Console''' and then run the above Python package installation.
+If you are using OpenShift / Origin Contaier Platform, you can use the Web UI to enter the `Container's Console` and then run the above Python package installation.
 
 # (Other way) to install more packages - Inside Jupyter Notebook
 ```
@@ -83,11 +83,11 @@ e.g.
     !{sys.executable} -m pip install numpy
 ```
 
-# Problem in Login
+# Problems in Login
 Few reasons that your login password might not work:
-1. You have multiple place set password and they are inconsistent: just search "password" and "PASSWORD" for all the files in the folder - basically, docker-compose.yml, docker-run.sh, run-sh (if you modify it) files are key sources for setting up password for login.
+1. You have multiple place set password and they are inconsistent: just search "***password***" and "***PASSWORD***" for all the files in the folder - basically, `docker-compose.yml, docker-run.sh, run-sh (if you modify it)`  files are key sources for setting up password for login.
 2. It might be your Chrome or browsers auto feed old password: To solve this problem, 
-Just launch a new "incognito windows" and then type URL as usuall:
+Just launch a new `incognito windows` and then type URL as usuall:
 ```
 http://<ip>:28888/  (if you disable HTTPS)
 or
