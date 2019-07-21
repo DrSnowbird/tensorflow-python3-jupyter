@@ -33,7 +33,7 @@ BUILD_TYPE=0
 ##       ==> Usually, when not in debugging mode anymore, then use 1 as choice.
 ##       ==> Or, your frequent needs of the container for DEV environment Use.
 ## ------------------------------------------------------------------------
-RUN_TYPE=0
+RUN_TYPE=1
 
 ## ------------------------------------------------------------------------
 ## Change to one (1) if run.sh needs to use host's user/group to run the Container
@@ -47,8 +47,8 @@ USER_VARS_NEEDED=0
 ## Valid "RESTART_OPTION" values:
 ##  { no, on-failure, unless-stopped, always }
 ## ------------------------------------------------------------------------
-RESTART_OPTION=no
-#RESTART_OPTION=unless-stopped
+#RESTART_OPTION=no
+RESTART_OPTION=unless-stopped
 
 ## ------------------------------------------------------------------------
 ## More optional values:
