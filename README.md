@@ -16,12 +16,11 @@ ENABLE_HTTPS=false
 We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
 
 # Components:
-* openjdk version "1.8.0_212"
+* openjdk version "1.8.0_232"
   OpenJDK Runtime Environment (build 1.8.0_212-8u212-b01-1~deb9u1-b01)
   OpenJDK 64-Bit Server VM (build 25.212-b01, mixed mode)
-* Apache Maven 3.6.0
-* Python 3.6 / Python 2.7 + pip 19.1 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
-* Node v11.15.0 + npm 6.7.0 (from NodeSource official Node Distribution)
+* Apache Maven 3.6
+* Python 3.6 / Python 2.7 + pip 19 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
 * Gradle 5.3
 * Spark 2.4.3 + Hadoop 2.7
 * Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
@@ -72,6 +71,12 @@ e.g.
     . . . etc.
 ```
 If you are using OpenShift / Origin Contaier Platform, you can use the Web UI to enter the `Container's Console` and then run the above Python package installation.
+
+3. Or, you can add your packages into the file below and restart "./run.sh" your Container. It will install additional packages in the file, "./requirements-extra.txt", for you.
+```
+# Bert pre-trained model
+pytorch-pretrained-bert
+```
 
 # (Other way) to install more packages - Inside Jupyter Notebook
 ```
@@ -274,63 +279,78 @@ widgetsnbextension   3.4.2
 
 # Releases Information
 ```
-developer@2368ba1413d1:~$ /usr/scripts/printVersions.sh 
+developer@bec4abfa0d44:~$ /usr/scripts/printVersions.sh 
 + echo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 + java -version
-openjdk version "1.8.0_212"
-OpenJDK Runtime Environment (build 1.8.0_212-8u212-b01-1~deb9u1-b01)
-OpenJDK 64-Bit Server VM (build 25.212-b01, mixed mode)
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-8u232-b09-0ubuntu1~18.04.1-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
 + mvn --version
-Apache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-24T18:41:47Z)
-Maven home: /usr/apache-maven-3.6.0
-Java version: 1.8.0_212, vendor: Oracle Corporation, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+Maven home: /usr/apache-maven-3.6.3
+Java version: 1.8.0_232, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
 Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "4.18.0-25-generic", arch: "amd64", family: "unix"
+OS name: "linux", version: "5.3.0-26-generic", arch: "amd64", family: "unix"
 + python -V
-Python 2.7.13
+Python 2.7.15+
 + python3 -V
-Python 3.5.3
+Python 3.6.9
 + pip --version
-pip 19.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
+pip 19.3.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
 + pip3 --version
-pip 19.1 from /usr/local/lib/python3.5/dist-packages/pip (python 3.5)
+pip 19.3.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
 + gradle --version
 
-Welcome to Gradle 5.3.1!
+Welcome to Gradle 6.0.1!
 
 Here are the highlights of this release:
- - Feature variants AKA "optional dependencies"
- - Type-safe accessors in Kotlin precompiled script plugins
- - Gradle Module Metadata 1.0
+ - Substantial improvements in dependency management, including
+   - Publishing Gradle Module Metadata in addition to pom.xml
+   - Advanced control of transitive versions
+   - Support for optional features and dependencies
+   - Rules to tweak published metadata
+ - Support for Java 13
+ - Faster incremental Java and Groovy compilation
+ - New Zinc compiler for Scala
+ - VS2019 support
+ - Support for Gradle Enterprise plugin 3.0
 
-For more details see https://docs.gradle.org/5.3.1/release-notes.html
+For more details see https://docs.gradle.org/6.0.1/release-notes.html
 
 
 ------------------------------------------------------------
-Gradle 5.3.1
+Gradle 6.0.1
 ------------------------------------------------------------
 
-Build time:   2019-03-28 09:09:23 UTC
-Revision:     f2fae6ba563cfb772c8bc35d31e43c59a5b620c3
+Build time:   2019-11-18 20:25:01 UTC
+Revision:     fad121066a68c4701acd362daf4287a7c309a0f5
 
-Kotlin:       1.3.21
-Groovy:       2.5.4
-Ant:          Apache Ant(TM) version 1.9.13 compiled on July 10 2018
-JVM:          1.8.0_212 (Oracle Corporation 25.212-b01)
-OS:           Linux 4.18.0-25-generic amd64
+Kotlin:       1.3.50
+Groovy:       2.5.8
+Ant:          Apache Ant(TM) version 1.10.7 compiled on September 1 2019
+JVM:          1.8.0_232 (Private Build 25.232-b09)
+OS:           Linux 5.3.0-26-generic amd64
 
 + npm -v
-6.7.0
+6.13.4
 + node -v
-v11.14.0
-+ cat /etc/os-release
-PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
-NAME="Debian GNU/Linux"
-VERSION_ID="9"
-VERSION="9 (stretch)"
-ID=debian
-HOME_URL="https://www.debian.org/"
-SUPPORT_URL="https://www.debian.org/support"
-BUG_REPORT_URL="https://bugs.debian.org/"
+v13.5.0
++ cat /etc/lsb-release /etc/os-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.2 LTS"
+NAME="Ubuntu"
+VERSION="18.04.2 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.2 LTS"
+VERSION_ID="18.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=bionic
+UBUNTU_CODENAME=bionic
 ```

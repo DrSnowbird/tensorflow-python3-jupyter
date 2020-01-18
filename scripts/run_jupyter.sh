@@ -26,6 +26,8 @@ env
 id
 whoami
 
+sudo -H pip3 --no-cache-dir install --ignore-installed -U -r $HOME/requirements-extra.txt
+
 #### ---- OpenSSL Self-Signed Certificate ---- ####
 SSL_DIR=$HOME/.cert
 SSL_CERT=$SSL_DIR/mycert.pem

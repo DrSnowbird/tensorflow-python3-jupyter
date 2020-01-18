@@ -49,9 +49,10 @@ RUN sudo -H pip3 --no-cache-dir install -U matplotlib && \
 
 #### ---- Install TensorFlow CPU version from central repo ---- ####
 RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
-    sudo -H pip3 --no-cache-dir install --upgrade tensorflow && \
-    python3 -c "import tensorflow as tf; print('TensorFlow version {} is installed.'.format(tf.VERSION))" && \
-    python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
+    sudo -H pip3 --no-cache-dir install --upgrade tensorflow 
+
+#    python3 -c "import tensorflow as tf; print('TensorFlow version {} is installed.'.format(tf.VERSION))" && \
+#    python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
 
 # system-wide install
 RUN sudo apt update -y && \
