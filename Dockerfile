@@ -1,5 +1,4 @@
 FROM openkbs/jdk-mvn-py3
-#FROM ubuntu:16.04
 
 MAINTAINER OpenKBS <DrSnowbird@openkbs.org>
 
@@ -105,8 +104,8 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 
 #### ---- Spark & PySpark Setup ---- ####
 # ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
-#
-ENV SPARK_VERSION=2.4.4
+# https://www.apache.org/dyn/closer.lua/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz
+ENV SPARK_VERSION=2.4.5
 ENV HADOOP_VERSION=2.7
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
