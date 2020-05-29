@@ -153,6 +153,27 @@ ORGANIZATION=openkbs
 baseDataFolder="$HOME/data-docker"
 
 ###################################################
+#### ---- Detect Host OS Type and minor Tweek: ----
+###################################################
+SED_MAC_FIX="''"
+CP_OPTION="--backup=numbered"
+HOST_IP=127.0.0.1
+function get_HOST_IP() {
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        # Linux ...
+        HOST_IP=`ip route get 1|grep via | awk '{print $7}' `
+        SED_MAC_FIX=
+    elif [[ $OSTYPE == darwin* ]]; then
+        # Mac OSX
+        HOST_IP=`ifconfig | grep "inet " | grep -Fv 127.0.0.1 | grep -Fv 192.168 | awk '{print $2}'`
+        CP_OPTION=
+    fi
+    echo "HOST_IP=${HOST_IP}"
+}
+get_HOST_IP
+MY_IP=${HOST_IP}
+
+###################################################
 #### **** Container package information ****
 ###################################################
 MY_IP=` hostname -I|awk '{print $1}'`
@@ -605,6 +626,8 @@ function setupDisplayType() {
         echo ${DISPLAY}
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OSX
+        # if you want to multi-media, you need customize it here
+        MEDIA_OPTIONS=
         xhost + 127.0.0.1
         export DISPLAY=host.docker.internal:0
         echo ${DISPLAY}
@@ -661,7 +684,7 @@ HOSTS_OPTIONS="-v /etc/hosts:/etc/hosts"
 ## ----------------- main --------------------- ##
 ##################################################
 ##################################################
-set -x
+
 case "${BUILD_TYPE}" in
     0)
         #### 0: (default) has neither X11 nor VNC/noVNC container build image type
@@ -676,20 +699,22 @@ case "${BUILD_TYPE}" in
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \
-            $* \
-            ${imageTag}
+            ${imageTag} \
+            $*
         ;;
     1)
         #### 1: X11/Desktip container build image type
         #### ---- for X11-based ---- #### 
         setupDisplayType
         echo ${DISPLAY}
-        X11_OPTION="-e DISPLAY=$DISPLAY -v $HOME/.chrome:/data -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix"
+        #X11_OPTION="-e DISPLAY=$DISPLAY -v $HOME/.chrome:/data -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix -e DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket"
+        X11_OPTION="-e DISPLAY=$DISPLAY -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix "
         echo "X11_OPTION=${X11_OPTION}"
         MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
         sudo docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
+            --network host \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${X11_OPTION} ${MEDIA_OPTIONS} \
             ${privilegedString} \
@@ -697,8 +722,8 @@ case "${BUILD_TYPE}" in
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \
-            $* \
-            ${imageTag}
+            ${imageTag} \
+            $*
         ;;
     2)
         #### 2: VNC/noVNC container build image type
@@ -720,11 +745,10 @@ case "${BUILD_TYPE}" in
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \
-            $* \
-            ${imageTag}
+            ${imageTag} \
+            $*
         ;;
 
 esac
 
-set +x
 

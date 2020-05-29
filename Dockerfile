@@ -105,6 +105,7 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 #### ---- Spark & PySpark Setup ---- ####
 # ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
 # https://www.apache.org/dyn/closer.lua/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.0-preview2/spark-3.0.0-preview2-bin-hadoop3.2.tgz
 ENV SPARK_VERSION=2.4.5
 ENV HADOOP_VERSION=2.7
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
