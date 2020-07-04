@@ -13,8 +13,7 @@ services:
       VOLUME: '/home/developer/notebooks'
       DOCKER_USER: 'developer'
       DOCKER_GROUP: 'developer'
-#      HOST_USER_ID: 'user1'
-#      HOST_GROUP_ID: 'user1' 
+    restart: always
     ports:
       - 26006:6006
       - 28888:8888
