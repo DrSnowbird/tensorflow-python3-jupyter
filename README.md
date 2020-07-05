@@ -1,4 +1,4 @@
-# Tensorflow + Python3 + Jupyter + Spark 2.4.5 + PySpark + Hadoop 2.7
+# Tensorflow + Python3 + Jupyter + PySpark + Spark 3.0 + Hadoop 3.2
 
 # NOTE: The latest update supported `HTTPS (as default)` for Jupyter Notebook to increase security:
 * Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` or `https://<ip>:28888/` - default) -- To change HTTPS or HTTP, see next paragraph.
@@ -16,6 +16,7 @@ ENABLE_HTTPS=false
 We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
 
 # Components:
+* ONNX and runtime
 * openjdk version "1.8.0_252"
   OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
   OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
@@ -101,6 +102,7 @@ or
 https://<ip>:28888/  (if you enable HTTPS, i.e., you want HTTPS://...)
 ```
 # Resources & References
+* [ONNX AI](https://onnx.ai/)
 * [TnesorFlow Tutorials](https://www.tensorflow.org/tutorials)
 * [Jupyter Notebook](https://jupyter.org/)
 * [TensorFlow](https://www.tensorflow.org/)
@@ -120,6 +122,7 @@ Note: the jupyter notebooks are only based on Python 3 kernels as default.
 
 # See Also - docker-based IDE
 * [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin): Spark (Scala/Java) Cluster with Spark ML/MLlib + Hadoop (HDFS)
+* [ONNX and Run-time environment](https://hub.docker.com/repository/docker/openkbs/onnx-ecosystem)
 * [openkbs/atom-docker](https://hub.docker.com/r/openkbs/atom-docker/)
 * [openkbs/eclipse-oxygen-docker](https://hub.docker.com/r/openkbs/eclipse-oxygen-docker/)
 * [openkbs/eclipse-photon-docker](https://hub.docker.com/r/openkbs/eclipse-photon-docker/)
