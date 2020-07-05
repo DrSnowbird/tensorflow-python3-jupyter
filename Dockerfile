@@ -39,7 +39,6 @@ RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
 RUN sudo -H pip3 --no-cache-dir install -U matplotlib && \
     sudo -H pip3 --no-cache-dir install --ignore-installed notebook && \
     sudo python3 -m ipykernel.kernelspec && \
-    sudo pip --no-cache-dir install --upgrade pip && \
     sudo pip3 --no-cache-dir install --upgrade pip 
 
 ##################################
@@ -50,8 +49,8 @@ RUN sudo -H pip3 --no-cache-dir install -U matplotlib && \
 RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
     sudo -H pip3 --no-cache-dir install --upgrade tensorflow 
 
-#    python3 -c "import tensorflow as tf; print('TensorFlow version {} is installed.'.format(tf.VERSION))" && \
-#    python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
+# RUN python3 -c "import tensorflow as tf; print('TensorFlow version {} is installed.'.format(tf.VERSION))" && \
+# RUN python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
 
 # system-wide install
 RUN sudo apt update -y && \
@@ -78,8 +77,6 @@ RUN echo "USER =======> ${USER}"
 ENV WORKSPACE=${HOME}/workspace
 ENV DATA=${HOME}/data
 
-RUN echo "USER =======> ${USER}"
-
 RUN mkdir -p ${WORKSPACE} ${DATA} 
 
 # Set up our notebook config.
@@ -89,7 +86,7 @@ COPY ./scripts/jupyter_notebook_config.py ${JUPYTER_CONF_DIR}/
 RUN echo "`ls -al ${JUPYTER_CONF_DIR}/*`"
 
 # Copy sample notebooks.
-COPY notebooks $HOME/sample-notebooks
+COPY ./notebooks $HOME/sample-notebooks
 
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062
@@ -104,16 +101,16 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 
 #### ---- Spark & PySpark Setup ---- ####
 # ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
-# https://www.apache.org/dyn/closer.lua/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.0-preview2/spark-3.0.0-preview2-bin-hadoop3.2.tgz
-ENV SPARK_VERSION=2.4.5
-ENV HADOOP_VERSION=2.7
+# https://www.apache.org/dyn/closer.lua/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
+#ENV SPARK_VERSION=2.4.6
+ENV SPARK_VERSION=3.0.0
+#ENV HADOOP_VERSION=2.7
+ENV HADOOP_VERSION=3.2
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV PATH=${SPARK_HOME}/bin:$PATH
 
-# https://www-us.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
 ENV SPARK_HADOOP_TGZ_URL=https://www-us.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 RUN wget -q ${SPARK_HADOOP_TGZ_URL} && \
     sudo tar -xzf $(basename ${SPARK_HADOOP_TGZ_URL}) -C /opt/ && \
@@ -132,5 +129,6 @@ VOLUME $HOME/notebooks
 
 WORKDIR "$HOME"
 
-#CMD ["/run_jupyter.sh"]
+#CMD ["/run_jupyter.sh", "notebooks", "--allow-root", "--port=8888", "--ip=0.0.0.0", "--no-browser"]
 CMD ["/run_jupyter.sh", "--allow-root"]
+

@@ -57,6 +57,7 @@ build:
 	--build-arg CIRCLE_SHA1="$(SHA)" \
 	--build-arg FROM_BASE=${FROM_BASE} \
 	--build-arg version=$(VERSION) \
+	--build-arg ENABLE_HTTPS=true \
 	-t $(imageTag):latest .
 
 push: build

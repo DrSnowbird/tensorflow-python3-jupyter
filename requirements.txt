@@ -19,3 +19,14 @@ gensim
 langdetect
 networkx
 pyspark
+
+
+# ONNX tools
+skl2onnx
+tf2onnx
+keras2onnx
+
+# ONNX
+onnx
+onnxmltools
+onnxruntime

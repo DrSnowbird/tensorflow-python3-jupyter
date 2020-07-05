@@ -8,8 +8,8 @@ services:
     container_name: tensorflow-python3-jupyter
     environment:
       PASSWORD: ${PASSWORD:-ChangeMe!}
-      ENABLE_HTTPS: 'false'
-#      ENABLE_HTTPS: 'true'
+      # ENABLE_HTTPS: 'false'
+      ENABLE_HTTPS: 'true'
       VOLUME: '/home/developer/notebooks'
       DOCKER_USER: 'developer'
       DOCKER_GROUP: 'developer'
@@ -18,7 +18,7 @@ services:
       - 26006:6006
       - 28888:8888
     env_file:
-      - ./docker-run.env
+      - ./.env
     volumes:
       - ./notebooks:/home/developer/notebooks
       - ./data:/home/developer/data
