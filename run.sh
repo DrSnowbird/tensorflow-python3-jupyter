@@ -714,7 +714,6 @@ case "${BUILD_TYPE}" in
         sudo docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
-            --network host \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${X11_OPTION} ${MEDIA_OPTIONS} \
             ${privilegedString} \
