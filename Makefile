@@ -79,6 +79,7 @@ up-it:
 	sudo docker-compose down
 
 up: build
+	sudo docker-compose down
 	sudo docker-compose up -d
 
 down:

@@ -103,10 +103,12 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 # ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
 # https://www.apache.org/dyn/closer.lua/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 # https://www.apache.org/dyn/closer.lua/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
-#ENV SPARK_VERSION=2.4.6
-ENV SPARK_VERSION=3.0.0
-#ENV HADOOP_VERSION=2.7
-ENV HADOOP_VERSION=3.2
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
+#
+ENV SPARK_VERSION=3.0.1
+#
+ENV HADOOP_VERSION=2.7
+#
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV PATH=${SPARK_HOME}/bin:$PATH
