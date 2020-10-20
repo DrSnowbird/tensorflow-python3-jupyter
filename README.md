@@ -1,7 +1,8 @@
 # Tensorflow + Python3 + Jupyter + PySpark + Spark 3.0 + Hadoop 3.2
 
-# NOTE: The latest update supported `HTTPS (as default)` for Jupyter Notebook to increase security:
-* Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` or `https://<ip>:28888/` - default) -- To change HTTPS or HTTP, see next paragraph.
+# NOTE: The latest update supported `HTTPS` for Jupyter Notebook to increase security:
+* Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` - **default** or `https://<ip>:28888/`) -- To change HTTPS or HTTP, see next paragraph 
+  * Remember to ***".env"*** setup for using HTTPS since the default is HTTP (again!)
 * Launch the **Tensorboard Web GUI server** (`http://<ip>:26006/` as default)
 
 ## To disable/enable HTTPS for Jupyter Notebook
@@ -16,17 +17,13 @@ ENABLE_HTTPS=false
 We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https://cloud.docker.com/u/openkbs/repository/docker/openkbs/docker-spark-bde2020-zeppelin). If you want Scala/Java Spark ML/Mlib etc, you might try that as well. In all, we support both Zeppelin Notebooks and Jupyter Notebooks technologies for both Spark Scala/Java and Python/PySpark data science users' needs.
 
 # Components:
-* ONNX and runtime
-* openjdk version "1.8.0_252"
-  OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
-  OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
-* Apache Maven 3.6
-* Python 3.6 / Python 2.7 + pip 20 + Python3 virtual environments (venv, virtualenv, virtualenvwrapper, mkvirtualenv, ..., etc.)
-* Gradle 6.0.1
-* NPM 6.14.5
-* Node v14.0.0
-* Spark 2.4.5 + Hadoop 2.7 (Coming soon Spark-3.0.0 + Hadoop 3.2)
-* Other tools: git wget unzip vim python python-setuptools python-dev python-numpy 
+* Jupyter
+  * ONNX and runtime
+  * Tensorflow and examples
+* [Java openkbs/jdk-mvn-py3 - see README.md](https://github.com/DrSnowbird/jdk-mvn-py3/blob/master/README.md)
+* [Base Container Image: openkbs/jdk-mvn-py3](https://github.com/DrSnowbird/jdk-mvn-py3)
+* [Base Container Image: openkbs/jdk-mvn-py3-x11](https://github.com/DrSnowbird/jdk-mvn-py3-x11)
+* [Base Components: OpenJDK, Python 3, PIP, Node/NPM, Gradle, Maven, etc.](https://github.com/DrSnowbird/jdk-mvn-py3#components) 
 
 # Run
 Two ways to run:
@@ -142,259 +139,192 @@ Note: the jupyter notebooks are only based on Python 3 kernels as default.
 * [openkbs/webstorm-vnc-docker](https://hub.docker.com/r/openkbs/webstorm-vnc-docker/)
 
 # Python Packages List
+You can use either
 ```
 import sys
 !{sys.executable} -m pip list
-
-Package                Version
----------------------- ---------------
-absl-py                0.9.0
-appdirs                1.4.3
-asn1crypto             0.24.0
-astunparse             1.6.3
-attrs                  19.3.0
-backcall               0.1.0
-beautifulsoup4         4.6.0
-bleach                 3.1.5
-blis                   0.4.1
-boto                   2.49.0
-boto3                  1.13.18
-botocore               1.16.18
-cachetools             4.1.0
-catalogue              1.0.0
-certifi                2020.4.5.1
-chardet                3.0.4
-click                  7.1.2
-cloudpickle            1.3.0
-cryptography           2.1.4
-cycler                 0.10.0
-cymem                  2.0.3
-decorator              4.4.2
-defusedxml             0.6.0
-distlib                0.3.0
-docutils               0.15.2
-entrypoints            0.3
-filelock               3.0.12
-findspark              1.3.0
-Flask                  1.1.2
-funcy                  1.14
-future                 0.18.2
-gast                   0.3.3
-gensim                 3.8.3
-google-auth            1.15.0
-google-auth-oauthlib   0.4.1
-google-pasta           0.2.0
-grpcio                 1.29.0
-h5py                   2.10.0
-html5lib               0.999999999
-httpie                 2.1.0
-hyperopt               0.2.4
-idna                   2.9
-importlib-metadata     1.6.0
-importlib-resources    1.4.0
-ipaddress              1.0.23
-ipykernel              5.3.0
-ipython                7.14.0
-ipython-genutils       0.2.0
-ipywidgets             7.5.1
-itsdangerous           1.1.0
-j2cli                  0.3.10
-jedi                   0.17.0
-Jinja2                 2.11.2
-jmespath               0.10.0
-joblib                 0.15.1
-json-lines             0.5.0
-jsonschema             3.2.0
-jupyter                1.0.0
-jupyter-client         6.1.3
-jupyter-console        6.1.0
-jupyter-core           4.6.3
-Keras                  2.3.1
-Keras-Applications     1.0.8
-Keras-Preprocessing    1.1.2
-keyring                10.6.0
-keyrings.alt           3.0
-kiwisolver             1.2.0
-langdetect             1.0.8
-lxml                   4.2.1
-Markdown               3.2.2
-MarkupSafe             1.1.1
-matplotlib             3.2.1
-mistune                0.8.4
-more-itertools         8.2.0
-murmurhash             1.0.2
-nbconvert              5.6.1
-nbformat               5.0.6
-networkx               2.4
-nltk                   3.5
-notebook               6.0.3
-numexpr                2.7.1
-numpy                  1.18.4
-oauthlib               3.1.0
-olefile                0.45.1
-opt-einsum             3.2.1
-packaging              20.4
-panda                  0.3.1
-pandas                 1.0.3
-pandasql               0.7.3
-pandocfilters          1.4.2
-parso                  0.7.0
-pbr                    5.4.5
-pexpect                4.8.0
-pickleshare            0.7.5
-Pillow                 7.1.2
-pip                    20.1.1
-pkgconfig              1.5.1
-plac                   1.1.3
-pluggy                 0.13.1
-preshed                3.0.2
-prometheus-client      0.8.0
-prompt-toolkit         3.0.5
-protobuf               3.12.2
-ptyprocess             0.6.0
-py                     1.8.1
-py4j                   0.10.7
-pyasn1                 0.4.8
-pyasn1-modules         0.2.8
-pycrypto               2.6.1
-Pygments               2.6.1
-pygobject              3.26.1
-pyLDAvis               2.1.2
-pyparsing              2.4.7
-pyrsistent             0.16.0
-pyspark                2.4.5
-pytest                 5.4.1
-python-apt             1.6.5+ubuntu0.2
-python-dateutil        2.8.1
-pytz                   2019.3
-pyxdg                  0.25
-PyYAML                 5.3.1
-pyzmq                  19.0.1
-qtconsole              4.7.3
-QtPy                   1.9.0
-regex                  2020.5.14
-requests               2.23.0
-requests-oauthlib      1.3.0
-rsa                    4.0
-s3transfer             0.3.3
-scikit-learn           0.22.2.post1
-scipy                  1.4.1
-seaborn                0.10.0
-SecretStorage          2.3.1
-Send2Trash             1.5.0
-setuptools             47.1.0
-six                    1.15.0
-smart-open             2.0.0
-spacy                  2.2.4
-SQLAlchemy             1.3.16
-srsly                  1.0.2
-stevedore              1.32.0
-tables                 3.4.2
-tensorboard            2.2.2
-tensorboard-plugin-wit 1.6.0.post3
-tensorflow             2.2.0
-tensorflow-estimator   2.2.0
-termcolor              1.1.0
-terminado              0.8.3
-testpath               0.4.4
-thinc                  7.4.0
-torch                  1.5.0
-tornado                6.0.4
-tqdm                   4.46.0
-traitlets              4.3.3
-unattended-upgrades    0.1
-urllib3                1.25.9
-virtualenv             20.0.21
-virtualenv-clone       0.5.4
-virtualenvwrapper      4.8.4
-wasabi                 0.6.0
-wcwidth                0.1.9
-webencodings           0.5.1
-Werkzeug               1.0.1
-wheel                  0.34.2
-widgetsnbextension     3.5.1
-wrapt                  1.12.1
-zipp                   3.1.0
+```
+or
+```
+developer@cace1316ae93:~$ pip freeze
+absl-py==0.10.0
+appdirs==1.4.4
+argon2-cffi==20.1.0
+asn1crypto==0.24.0
+astunparse==1.6.3
+async-generator==1.10
+attrs==20.2.0
+backcall==0.2.0
+beautifulsoup4==4.6.0
+bleach==3.2.1
+blis==0.4.1
+cachetools==4.1.1
+catalogue==1.0.0
+certifi==2020.6.20
+cffi==1.14.3
+chardet==3.0.4
+click==7.1.2
+cloudpickle==1.6.0
+cryptography==2.1.4
+cycler==0.10.0
+cymem==2.0.3
+decorator==4.4.2
+defusedxml==0.6.0
+distlib==0.3.1
+entrypoints==0.3
+filelock==3.0.12
+findspark==1.4.2
+fire==0.3.1
+Flask==1.1.2
+funcy==1.15
+future==0.18.2
+gast==0.3.3
+gensim==3.8.3
+google-auth==1.22.1
+google-auth-oauthlib==0.4.1
+google-pasta==0.2.0
+grpcio==1.32.0
+h5py==2.10.0
+html5lib==0.999999999
+httpie==2.2.0
+hyperopt==0.2.5
+idna==2.10
+importlib-metadata==2.0.0
+importlib-resources==3.0.0
+iniconfig==1.1.1
+ipaddress==1.0.23
+ipykernel==5.3.4
+ipython==7.16.1
+ipython-genutils==0.2.0
+ipywidgets==7.5.1
+itsdangerous==1.1.0
+j2cli==0.3.10
+jedi==0.17.2
+Jinja2==2.11.2
+joblib==0.17.0
+json-lines==0.5.0
+jsonschema==3.2.0
+jupyter==1.0.0
+jupyter-client==6.1.7
+jupyter-console==6.2.0
+jupyter-core==4.6.3
+jupyterlab-pygments==0.1.2
+Keras==2.4.3
+Keras-Preprocessing==1.1.2
+keras2onnx==1.7.0
+keyring==10.6.0
+keyrings.alt==3.0
+kiwisolver==1.2.0
+langdetect==1.0.8
+lxml==4.2.1
+Markdown==3.3.2
+MarkupSafe==1.1.1
+matplotlib==3.3.2
+mistune==0.8.4
+murmurhash==1.0.2
+nbclient==0.5.1
+nbconvert==6.0.7
+nbformat==5.0.8
+nest-asyncio==1.4.1
+networkx==2.5
+nltk==3.5
+notebook==6.1.4
+numexpr==2.7.1
+numpy==1.19.2
+oauthlib==3.1.0
+olefile==0.45.1
+onnx==1.7.0
+onnxconverter-common==1.7.0
+onnxmltools==1.7.0
+onnxruntime==1.5.2
+opt-einsum==3.3.0
+packaging==20.4
+panda==0.3.1
+pandas==1.1.3
+pandasql==0.7.3
+pandocfilters==1.4.2
+parso==0.7.1
+pbr==5.5.0
+pexpect==4.8.0
+pickleshare==0.7.5
+Pillow==8.0.0
+pkgconfig==1.5.1
+plac==1.1.3
+pluggy==0.13.1
+preshed==3.0.2
+prometheus-client==0.8.0
+prompt-toolkit==3.0.8
+protobuf==3.13.0
+ptyprocess==0.6.0
+py==1.9.0
+py4j==0.10.9
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycparser==2.20
+pycrypto==2.6.1
+Pygments==2.7.1
+pygobject==3.26.1
+pyLDAvis==2.1.2
+pyparsing==2.4.7
+pyrsistent==0.17.3
+pyspark==3.0.1
+pytest==6.1.1
+python-apt==1.6.5+ubuntu0.3
+python-dateutil==2.8.1
+python-git==2018.2.1
+pytz==2020.1
+pyxdg==0.25
+PyYAML==5.3.1
+pyzmq==19.0.2
+qtconsole==4.7.7
+QtPy==1.9.0
+regex==2020.10.15
+requests==2.24.0
+requests-oauthlib==1.3.0
+rsa==4.6
+scikit-learn==0.23.2
+scipy==1.5.3
+seaborn==0.11.0
+SecretStorage==2.3.1
+Send2Trash==1.5.0
+six==1.15.0
+skl2onnx==1.7.0
+smart-open==3.0.0
+spacy==2.3.2
+SQLAlchemy==1.3.20
+srsly==1.0.2
+stevedore==3.2.2
+tables==3.4.2
+tensorboard==2.3.0
+tensorboard-plugin-wit==1.7.0
+tensorflow==2.3.1
+tensorflow-estimator==2.3.0
+termcolor==1.1.0
+terminado==0.9.1
+testpath==0.4.4
+tf2onnx==1.7.1
+thinc==7.4.1
+threadpoolctl==2.1.0
+toml==0.10.1
+torch==1.6.0
+tornado==6.0.4
+tqdm==4.50.2
+traitlets==4.3.3
+typing-extensions==3.7.4.3
+unattended-upgrades==0.1
+urllib3==1.25.11
+virtualenv==20.0.35
+virtualenv-clone==0.5.4
+virtualenvwrapper==4.8.4
+wasabi==0.8.0
+wcwidth==0.2.5
+webencodings==0.5.1
+Werkzeug==1.0.1
+widgetsnbextension==3.5.1
+wrapt==1.12.1
+yml2json==1.1.3
+zipp==3.3.1
 ```
 
-# Releases Information
-```
-developer@e822d335ae79:~$ /usr/scripts/printVersions.sh 
-+ echo JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-+ whereis java
-java: /usr/bin/java /usr/share/java /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/share/man/man1/java.1.gz
-+ echo
-
-+ java -version
-openjdk version "1.8.0_252"
-OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
-OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
-+ mvn --version
-Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
-Maven home: /usr/apache-maven-3.6.3
-Java version: 1.8.0_252, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
-Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "5.3.0-53-generic", arch: "amd64", family: "unix"
-+ python -V
-Python 2.7.17
-+ python3 -V
-Python 3.6.9
-+ pip --version
-pip 20.1.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
-+ pip3 --version
-pip 20.1.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
-+ gradle --version
-
-Welcome to Gradle 6.0.1!
-
-Here are the highlights of this release:
- - Substantial improvements in dependency management, including
-   - Publishing Gradle Module Metadata in addition to pom.xml
-   - Advanced control of transitive versions
-   - Support for optional features and dependencies
-   - Rules to tweak published metadata
- - Support for Java 13
- - Faster incremental Java and Groovy compilation
- - New Zinc compiler for Scala
- - VS2019 support
- - Support for Gradle Enterprise plugin 3.0
-
-For more details see https://docs.gradle.org/6.0.1/release-notes.html
-
-
-------------------------------------------------------------
-Gradle 6.0.1
-------------------------------------------------------------
-
-Build time:   2019-11-18 20:25:01 UTC
-Revision:     fad121066a68c4701acd362daf4287a7c309a0f5
-
-Kotlin:       1.3.50
-Groovy:       2.5.8
-Ant:          Apache Ant(TM) version 1.10.7 compiled on September 1 2019
-JVM:          1.8.0_252 (Private Build 25.252-b09)
-OS:           Linux 5.3.0-53-generic amd64
-
-+ npm -v
-6.14.4
-+ node -v
-v14.0.0
-+ cat /etc/lsb-release /etc/os-release
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=18.04
-DISTRIB_CODENAME=bionic
-DISTRIB_DESCRIPTION="Ubuntu 18.04.2 LTS"
-NAME="Ubuntu"
-VERSION="18.04.2 LTS (Bionic Beaver)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 18.04.2 LTS"
-VERSION_ID="18.04"
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-VERSION_CODENAME=bionic
-UBUNTU_CODENAME=bionic
-```
+# Releases information
+See [Release information](https://github.com/DrSnowbird/jdk-mvn-py3#releases-information)
