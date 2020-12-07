@@ -20,6 +20,8 @@ langdetect
 networkx
 pyspark
 
+# Graphviz
+pydot
 
 # ONNX tools
 skl2onnx

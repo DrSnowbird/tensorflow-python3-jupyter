@@ -6,7 +6,7 @@ USER ${USER}
 WORKDIR ${HOME}
 
 #### ---- Install some Tensorflow dependencies ----
-RUN sudo apt-get update && \
+RUN sudo apt-get update -y && \
     sudo apt-get install -y --no-install-recommends \
     build-essential \
     curl \
@@ -27,6 +27,9 @@ RUN sudo apt-get update && \
     && \
     sudo apt-get clean && \
     sudo rm -rf /var/lib/apt/lists/*
+
+#### Graphviz install ####
+RUN sudo apt-get update -y && sudo apt-get install -y graphviz
 
 ###################################
 #### ----   PIP modules: ----  ####
