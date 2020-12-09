@@ -8,11 +8,10 @@ services:
     container_name: tensorflow-python3-jupyter
     environment:
       PASSWORD: ${PASSWORD:-ChangeMe!}
-      ENABLE_HTTPS: 'false'
-      #ENABLE_HTTPS: 'true'
-      VOLUME: '/home/developer/notebooks'
-      DOCKER_USER: 'developer'
-      DOCKER_GROUP: 'developer'
+      ENABLE_HTTPS: ${ENABLE_HTTPS:-false}
+      VOLUME: /home/developer/notebooks
+      DOCKER_USER: developer
+      DOCKER_GROUP: developer
     restart: always
     ports:
       - 26006:6006
