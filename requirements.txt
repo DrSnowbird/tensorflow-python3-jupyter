@@ -1,3 +1,14 @@
+# PyYAML
+pyyaml>=5.1
+
+# Jupyter Editor Auto-complete
+#jupyter-tabnine
+jedi
+robotkernel
+
+# plot
+matplotlib
+
 # NLP Processing
 nltk
 networkx
@@ -5,23 +16,36 @@ gensim
 
 # NLP Toolkit
 nltk
-tqdm
-spacy
+gensim
 
-# ML Packages
+# Spacy
+#spacy
+#neuralcoref
+
+# ML Packages: PyTorch, Lightning, Transformers
 keras
 torch
+transformers
+pytorch-lightning
+pytorch-pretrained-bert
 
 # Spark, PySpark
 findspark
-Flask
-gensim
-langdetect
-networkx
 pyspark
 
-# Graphviz
+# Web REST API
+Flask
+langdetect
+
+# Graphviz, Network Node-Edge
 pydot
+networkx
+
+# Visual tools
+tqdm
+
+# Google
+gdown
 
 # ONNX tools
 skl2onnx

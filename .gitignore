@@ -1,6 +1,7 @@
 *.log
 *.swp
 *.tmp
+*tmp*
 data/
 .fuse*
 *.zip*

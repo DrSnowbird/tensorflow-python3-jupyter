@@ -1,4 +1,6 @@
 FROM openkbs/jdk-mvn-py3
+#FROM 11.4.1-devel-ubuntu20.04 
+#11.4.1-base-ubuntu18.04
 
 MAINTAINER OpenKBS <DrSnowbird@openkbs.org>
 
@@ -29,20 +31,25 @@ RUN sudo apt-get update -y && \
     sudo rm -rf /var/lib/apt/lists/*
 
 #### Graphviz install ####
-RUN sudo apt-get update -y && sudo apt-get install -y graphviz
+#temp gpg error fix
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+#temp gpg error fix
+RUN sudo apt-get update -y
+RUN sudo apt-get install -y graphviz
 
 ###################################
 #### ----   PIP modules: ----  ####
 ###################################
 #### ---- pip3 Package installation ---- ####
-COPY requirements.txt ./
 
-RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
-    sudo -H pip3 --no-cache-dir install --ignore-installed -U -r requirements.txt
-RUN sudo -H pip3 --no-cache-dir install -U matplotlib && \
-    sudo -H pip3 --no-cache-dir install --ignore-installed notebook && \
-    sudo python3 -m ipykernel.kernelspec && \
-    sudo pip3 --no-cache-dir install --upgrade pip 
+COPY requirements.txt ./
+ENV PATH="$HOME/.local/bin:$PATH"
+RUN sudo python3 -m pip --no-cache-dir install --upgrade pip && \
+    sudo python3 -m pip --no-cache-dir install --upgrade setuptools tensorflow && \
+    sudo python3 -m pip --no-cache-dir install --ignore-installed notebook && \
+    sudo python3 -m pip --no-cache-dir install --ignore-installed -r requirements.txt
+
+RUN sudo python3 -m ipykernel.kernelspec
 
 ##################################
 #### ----   Tensorflow: ----  ####
@@ -56,8 +63,8 @@ RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
 # RUN python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
 
 # system-wide install
-RUN sudo apt update -y && \
-    sudo apt install python3-dev python3-pip && \
+RUN sudo apt-get update -y && \
+    sudo apt-get install python3-dev python3-pip && \
     sudo -H pip3 --no-cache-dir install -U virtualenv 
     
 #### ---- Ref: https://www.tensorflow.org/install/pip ---- ####
@@ -70,6 +77,13 @@ RUN sudo chown -R ${USER}:${USER} ${HOME}
 
 ## -- added Local PIP installation bin to PATH
 ENV PATH=${PATH}:${HOME}/.local/bin
+
+#### ---- R inside Jupyter ---- ####
+#RUN sudo apt install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common && \
+#RUN sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'  && \
+RUN sudo apt-get install -y r-base  && \
+    sudo apt-get update -y  && \
+    sudo apt-get install -y python3-ipykernel
 
 ##################################
 #### Set up user environments ####
@@ -107,17 +121,27 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 # https://www.apache.org/dyn/closer.lua/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 # https://www.apache.org/dyn/closer.lua/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
 # https://www.apache.org/dyn/closer.lua/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz
+##https://downloads.apache.org/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.1.1/spark-3.1.1-bin-hadoop2.7.tgz
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
+# https://www.apache.org/dyn/closer.lua/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
+
+#ENV SPARK_VERSION=3.0.3
+ENV SPARK_VERSION=3.1.2
 #
-ENV SPARK_VERSION=3.0.1
+#ENV HADOOP_VERSION=2.7
+ENV HADOOP_VERSION=3.2
 #
-ENV HADOOP_VERSION=2.7
-#
+ENV SPARK_DOWN_SITE=https://downloads.apache.org
+#ENV SPARK_DOWN_SITE=https://www-us.apache.org/dist
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV PATH=${SPARK_HOME}/bin:$PATH
 
-ENV SPARK_HADOOP_TGZ_URL=https://www-us.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
-RUN wget -q ${SPARK_HADOOP_TGZ_URL} && \
+
+ENV SPARK_HADOOP_TGZ_URL=${SPARK_DOWN_SITE}/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
+RUN wget -q --no-check-certificate ${SPARK_HADOOP_TGZ_URL} && \
     sudo tar -xzf $(basename ${SPARK_HADOOP_TGZ_URL}) -C /opt/ && \
     sudo ln -s /opt/${SPARK_HADOOP} ${SPARK_HOME} && \
     echo "export PYSPARK_DRIVER_PYTHON=jupyter \nexport PYSPARK_DRIVER_PYTHON_OPTS='notebook'" >> ${HOME}/.bashrc && \

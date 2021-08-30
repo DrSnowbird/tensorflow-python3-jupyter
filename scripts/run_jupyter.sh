@@ -59,9 +59,20 @@ jupyter nbextension enable --py --user widgetsnbextension
 
 #jupyter notebook "$@"
 
+# jupyter notebook --NotebookApp.iopub_data_rate_limit=1.0e10
+
+#### ---- Auto completion ----
+#jupyter nbextension install --py jupyter_tabnine --system
+#### ---- enable notebook extension and server extension
+#jupyter nbextension enable --py --user jupyter_tabnine 
+#jupyter serverextension enable --py --user jupyter_tabnine
+
+DATA_RATE_LIMIT=1.0e10
+DATA_RATE_ARGS="--NotebookApp.iopub_data_rate_limit=${DATA_RATE_LIMIT}"
+
 ENABLE_HTTPS=`echo $ENABLE_HTTPS |tr '[:upper:]' '[:lower:]'`
 if [ "$ENABLE_HTTPS" = "true" ]; then
-    jupyter notebook --ip="0.0.0.0" "$@" --certfile=${SSL_CERT} --keyfile=${SSL_KEY}
+    jupyter notebook --ip="0.0.0.0" "$@" --certfile=${SSL_CERT} --keyfile=${SSL_KEY} ${DATA_RATE_ARGS}
 else
-    jupyter notebook --ip="0.0.0.0" "$@" 
+    jupyter notebook --ip="0.0.0.0" "$@" ${DATA_RATE_ARGS}
 fi

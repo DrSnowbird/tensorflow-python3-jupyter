@@ -1,5 +1,7 @@
 # Tensorflow + Python3 + Jupyter + PySpark + Spark 3.0 + Hadoop 3.2
 
+# (New) Added R Kernel support.
+
 # NOTE: The latest update supported `HTTPS` for Jupyter Notebook to increase security:
 * Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` - **default** or `https://<ip>:28888/`) -- To change HTTPS or HTTP, see next paragraph 
   * Remember to ***".env"*** setup for using HTTPS since the default is HTTP (again!)
@@ -114,6 +116,8 @@ https://<ip>:28888/  (if you enable HTTPS, i.e., you want HTTPS://...)
 * [Text Analytics for Beginners using NLTK](https://www.datacamp.com/community/tutorials/text-analytics-beginners-nltk)
 * [spaCy Notebooks](https://github.com/explosion/spacy-notebooks)
 * [spaCy models for training](https://spacy.io/usage/training)
+* [R Studio in Jupyter](https://dzone.com/articles/using-r-on-jupyternbspnotebook)
+* [IRKernel for Jupyter](https://irkernel.github.io/installation/)
 
 Note: the jupyter notebooks are only based on Python 3 kernels as default.
 
