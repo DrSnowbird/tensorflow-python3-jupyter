@@ -52,17 +52,9 @@ RUN sudo python3 -m pip --no-cache-dir install --upgrade pip && \
 RUN sudo python3 -m ipykernel.kernelspec
 
 ##################################
-#### ----   Tensorflow: ----  ####
+#### ----   Virtualenv: ----  ####
 ##################################
 
-#### ---- Install TensorFlow CPU version from central repo ---- ####
-RUN sudo -H pip3 --no-cache-dir install --upgrade setuptools && \
-    sudo -H pip3 --no-cache-dir install --upgrade tensorflow 
-
-# RUN python3 -c "import tensorflow as tf; print('TensorFlow version {} is installed.'.format(tf.VERSION))" && \
-# RUN python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"
-
-# system-wide install
 RUN sudo apt-get update -y && \
     sudo apt-get install python3-dev python3-pip && \
     sudo -H pip3 --no-cache-dir install -U virtualenv 
@@ -138,7 +130,6 @@ ENV SPARK_DOWN_SITE=https://downloads.apache.org
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV PATH=${SPARK_HOME}/bin:$PATH
-
 
 ENV SPARK_HADOOP_TGZ_URL=${SPARK_DOWN_SITE}/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 RUN wget -q --no-check-certificate ${SPARK_HADOOP_TGZ_URL} && \

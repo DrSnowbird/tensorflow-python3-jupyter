@@ -1,6 +1,7 @@
-# Tensorflow + Python3 + Jupyter + PySpark + Spark 3.0 + Hadoop 3.2
+# GPU/CUDA Supported: Tensorflow + Python3 + Jupyter + PySpark + Spark 3.0 + Hadoop 3.2
 
-# (New) Added R Kernel support.
+# * (**NEW**) `Auto detect & enable GPU/CUDA` [see CUDA Detection in Notebook](https://github.com/DrSnowbird/tensorflow-python3-jupyter/doc/PyTorch-GPU-CUDA-Detection.png) into Container and Jupyter Notebook!
+# * (*New*) Added R Kernel support.
 
 # NOTE: The latest update supported `HTTPS` for Jupyter Notebook to increase security:
 * Launch the **Tensorflow-Python3-Jupyter server** (`http://<ip>:28888/` - **default** or `https://<ip>:28888/`) -- To change HTTPS or HTTP, see next paragraph 
@@ -27,12 +28,32 @@ We also provide Zeppelin notebook [openkbs/docker-spark-bde2020-zeppelin](https:
 * [Base Container Image: openkbs/jdk-mvn-py3-x11](https://github.com/DrSnowbird/jdk-mvn-py3-x11)
 * [Base Components: OpenJDK, Python 3, PIP, Node/NPM, Gradle, Maven, etc.](https://github.com/DrSnowbird/jdk-mvn-py3#components) 
 
-# Run
-Two ways to run:
+## Run (GPU/Nvidia - Auto Enable)
+* To run GPU/Nvidia, you need to install the `Nvidia Driver` in your `HOST machine` first and then install `nvidia-docker2`.
+* Please refer to [`Nvidia Container Toolkit`](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) documentation for how to install properly
+* You also need to setup environment variables once you have successfully install `Nvidia driver` and `Nvidia-docker2` Container Toolkit `before you run Docker` (trying to use nvidia-docker2). 
+It's recommended to setup in your HOST VM or Machine's user account's `.bashrc` profile.
 ```
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+./run.sh -g
+or, let it auto check and use Nvidia GPU if available:
 ./run.sh
 ```
-or
+
+## Run (If choose only CPU!)
+* It will download 'yolov5s.pt' on-the-fly to use if not existing.
+
+```
+./run.sh
+or, explicitly disable GPU to use CPU.
+./run.sh -c
+```
+
+
+# Run (using docker-compose)
+
 ```
 docker pull openkbs/tensorflow-python3-jupyter
 docker-compose up -d

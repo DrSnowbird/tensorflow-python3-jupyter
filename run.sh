@@ -14,6 +14,46 @@ if [ $# -lt 1 ]; then
     echo "--------------------------------------------------------"
 fi
 
+###################################################
+#### ---- Parse Command Line Arguments:  ---- #####
+###################################################
+IS_TO_RUN_CPU=0
+IS_TO_RUN_GPU=1
+
+PARAMS=""
+while (( "$#" )); do
+  case "$1" in
+    -c|--cpu)
+      IS_TO_RUN_CPU=1
+      IS_TO_RUN_GPU=0
+      GPU_OPTION=
+      shift
+      ;;
+    -g|--gpu)
+      IS_TO_RUN_CPU=0
+      IS_TO_RUN_GPU=1
+      GPU_OPTION=" --gpus all "
+      shift
+      ;;
+    -*|--*=) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
+
+echo "-c (IS_TO_RUN_CPU): $IS_TO_RUN_CPU"
+echo "-g (IS_TO_RUN_GPU): $IS_TO_RUN_GPU"
+
+echo "remiaing args:"
+echo $*
+
 ###########################################################################
 #### ---- RUN Configuration (CHANGE THESE if needed!!!!)           --- ####
 ###########################################################################
@@ -83,10 +123,10 @@ function check_NVIDIA() {
         fi
     fi
 }
-#check_NVIDIA
-#echo "GPU_OPTION= ${GPU_OPTION}"
+check_NVIDIA
+echo "GPU_OPTION= ${GPU_OPTION}"
 
-#echo "$@"
+echo "$@"
 
 ## ------------------------------------------------------------------------
 ## Change to one (1) if run.sh needs to use host's user/group to run the Container
@@ -104,8 +144,8 @@ if [ "$1" = "-a" ] && [ "${RUN_TYPE}" = "1" ] ; then
     RESTART_OPTION=always
     shift 1
 fi
-#RESTART_OPTION=${RESTART_OPTION:-no}
-RESTART_OPTION=${RESTART_OPTION:-unless-stopped}
+RESTART_OPTION=${RESTART_OPTION:-no}
+#RESTART_OPTION=${RESTART_OPTION:-unless-stopped}
 
 ## ------------------------------------------------------------------------
 ## More optional values:
@@ -469,7 +509,7 @@ echo "PORT_MAP=${PORT_MAP}"
 ###################################################
 #### ---- Generate Environment Variables       ----
 ###################################################
-ENV_VARS=""
+ENV_VARS=${ENV_VARS:-" -e HOST_IP=${HOST_IP}" }
 function generateEnvVars_v2() {
     while read line; do
         echo "Line=$line"
@@ -786,6 +826,7 @@ fi
 ## ----------------- main --------------------- ##
 ##################################################
 ##################################################
+set -x
 
 case "${BUILD_TYPE}" in
     0)
@@ -795,6 +836,7 @@ case "${BUILD_TYPE}" in
         sudo docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
+            ${GPU_OPTION} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${privilegedString} \
             ${USER_VARS} \
@@ -802,7 +844,7 @@ case "${BUILD_TYPE}" in
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} \
-            $@
+            "$@"
         ;;
     1)
         #### 1: X11/Desktip container build image type
@@ -817,6 +859,7 @@ case "${BUILD_TYPE}" in
         sudo docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
+            ${GPU_OPTION} \
             ${MEDIA_OPTIONS} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${X11_OPTION} \
@@ -826,7 +869,7 @@ case "${BUILD_TYPE}" in
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} \
-            $@
+            "$@"
         ;;
     2)
         #### 2: VNC/noVNC container build image type
