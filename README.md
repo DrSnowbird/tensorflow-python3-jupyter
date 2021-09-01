@@ -1,6 +1,6 @@
 # GPU/CUDA Supported: Tensorflow + Python3 + Jupyter + PySpark + Spark 3.0 + Hadoop 3.2
 
-# * (**NEW**) `Auto detect & enable GPU/CUDA` [see CUDA Detection in Notebook](https://github.com/DrSnowbird/tensorflow-python3-jupyter/doc/PyTorch-GPU-CUDA-Detection.png) into Container and Jupyter Notebook!
+# * (**NEW**) `Auto detect & enable GPU/CUDA` [see CUDA Detection in Notebook](https://github.com/DrSnowbird/tensorflow-python3-jupyter/blob/master/doc/PyTorch-GPU-CUDA-Detection.png) into Container and Jupyter Notebook!
 # * (*New*) Added R Kernel support.
 
 # NOTE: The latest update supported `HTTPS` for Jupyter Notebook to increase security:
