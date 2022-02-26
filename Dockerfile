@@ -138,6 +138,10 @@ RUN wget -q --no-check-certificate ${SPARK_HADOOP_TGZ_URL} && \
     echo "export PYSPARK_DRIVER_PYTHON=jupyter \nexport PYSPARK_DRIVER_PYTHON_OPTS='notebook'" >> ${HOME}/.bashrc && \
     rm -f $(basename ${SPARK_HADOOP_TGZ_URL})
 
+#### ---- Jupyter Notebook Extensions ---- ####
+RUN pip install jupyter_contrib_nbextensions && \
+    jupyter contrib nbextension install
+
 # Expose Ports for TensorBoard (6006), Ipython (8888)
 EXPOSE 6006
 EXPOSE 8888
@@ -146,6 +150,11 @@ VOLUME $HOME/data
 VOLUME $HOME/workspace
 VOLUME $HOME/logs
 VOLUME $HOME/notebooks
+
+## ref: https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#usage
+##
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
 
 WORKDIR "$HOME"
 

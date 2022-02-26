@@ -1,3 +1,5 @@
 # Bert pre-trained model
 
-
+SPARQLWrapper
+ipython-sparql-pandas
+ipython_sparql
