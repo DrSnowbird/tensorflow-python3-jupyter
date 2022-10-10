@@ -1,4 +1,4 @@
-FROM openkbs/jdk-mvn-py3
+FROM openkbs/jdk11-mvn-py3
 #FROM 11.4.1-devel-ubuntu20.04 
 #11.4.1-base-ubuntu18.04
 
@@ -19,7 +19,6 @@ RUN sudo apt-get update -y && \
     python \
     python3 \
     python3-dev \
-    python-pip \
     python3-pip \
     python3-setuptools \
     rsync \
@@ -44,10 +43,10 @@ RUN sudo apt-get install -y graphviz
 
 COPY requirements.txt ./
 ENV PATH="$HOME/.local/bin:$PATH"
-RUN sudo python3 -m pip --no-cache-dir install --upgrade pip && \
-    sudo python3 -m pip --no-cache-dir install --upgrade setuptools tensorflow && \
-    sudo python3 -m pip --no-cache-dir install --ignore-installed notebook && \
-    sudo python3 -m pip --no-cache-dir install --ignore-installed -r requirements.txt
+RUN python3 -m pip --no-cache-dir install --upgrade pip && \
+    python3 -m pip --no-cache-dir install --upgrade setuptools tensorflow && \
+    python3 -m pip --no-cache-dir install --ignore-installed notebook && \
+    python3 -m pip --no-cache-dir install --ignore-installed -r requirements.txt
 
 RUN sudo python3 -m ipykernel.kernelspec
 
@@ -110,37 +109,28 @@ RUN sudo chown -R ${USER}:${USER} $HOME $HOME/.jupyter && \
 
 #### ---- Spark & PySpark Setup ---- ####
 # ref: https://blog.sicara.com/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
-# https://www.apache.org/dyn/closer.lua/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz
-##https://downloads.apache.org/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.1.1/spark-3.1.1-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
-# https://www.apache.org/dyn/closer.lua/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
-
-#ENV SPARK_VERSION=3.0.3
-ENV SPARK_VERSION=3.1.2
+# https://dlcdn.apache.org/spark/spark-3.3.0/spark-3.3.0-bin-hadoop3.tgz
+#
+ENV SPARK_VERSION=3.3.0
 #
 #ENV HADOOP_VERSION=2.7
-ENV HADOOP_VERSION=3.2
+ENV HADOOP_VERSION=3
 #
-ENV SPARK_DOWN_SITE=https://downloads.apache.org
-#ENV SPARK_DOWN_SITE=https://www-us.apache.org/dist
+ENV SPARK_DOWN_SITE=https://dlcdn.apache.org/
 ENV SPARK_HADOOP=spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV PATH=${SPARK_HOME}/bin:$PATH
 
 ENV SPARK_HADOOP_TGZ_URL=${SPARK_DOWN_SITE}/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
-RUN wget -q --no-check-certificate ${SPARK_HADOOP_TGZ_URL} && \
+RUN wget --no-check-certificate ${SPARK_HADOOP_TGZ_URL} && \
     sudo tar -xzf $(basename ${SPARK_HADOOP_TGZ_URL}) -C /opt/ && \
     sudo ln -s /opt/${SPARK_HADOOP} ${SPARK_HOME} && \
     echo "export PYSPARK_DRIVER_PYTHON=jupyter \nexport PYSPARK_DRIVER_PYTHON_OPTS='notebook'" >> ${HOME}/.bashrc && \
     rm -f $(basename ${SPARK_HADOOP_TGZ_URL})
 
 #### ---- Jupyter Notebook Extensions ---- ####
-RUN pip install jupyter_contrib_nbextensions && \
-    jupyter contrib nbextension install
+RUN sudo pip3 install jupyter_contrib_nbextensions
+RUN sudo jupyter contrib nbextension install
 
 # Expose Ports for TensorBoard (6006), Ipython (8888)
 EXPOSE 6006

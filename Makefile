@@ -1,95 +1,147 @@
-# login first
-# # docker loging, or,
-# #
-# # sudo docker login -p FpXM6Qy9vVL5kPeoefzxwA-oaYb-Wpej2iXTwV7UHYs -e unused -u unused docker-registry-default.openkbs.org
-
-# oc process -f ./files/deployments/template.yml -v API_NAME=$(REGISTRY_IMAGE) > template.active
+# -------------------------------------------------------------------------------------------------------
+# login first (Registry: e.g., hub.docker.io, registry.localhost:5000, etc.)
+# a.)  docker login
+# or
+# b.) sudo docker login -p FpXM6Qy9vVL5kPeoefzxwA-oaYb-Wpej2iXTwV7UHYs -e unused -u unused docker-registry-default.openkbs.org
+# e.g. (using Openshift)
+#    oc process -f ./files/deployments/template.yml -v API_NAME=$(REGISTRY_IMAGE) > template.active
 #
 # to run:
-# make <verb> APP_VERSION=<> APPLICATION_NAME=<>
+# make <verb> [ APP_VERSION=<...> DOCKER_NAME=<...> REGISTRY_HOST=<...> ]
 # example:
-#   make push version=1.0.1
+#   make build
+#   make up
+#   make down
+# -------------------------------------------------------------------------------------------------------
 
-ORGANIZATION=$(shell echo $${ORGANIZATION:-openkbs})
-PROJECT=$(shell echo $${PROJECT:-dev})
-APPLICATION_NAME=$(shell echo $${PWD\#\#*/})
+SHELL := /bin/bash
 
-APP_VERSION=$(shell echo $${APP_VERSION:-latest})
-# APP_VERSION=$(shell echo $${APP_VERSION:-1.0.0})
-
-imageTag=$(ORGANIZATION)/$(APPLICATION_NAME)
-
-## Docker Registry (Private Server)
-REGISTRY_HOST=$(shell echo $${REGISTRY_HOST:-registry01.openkbs.org:5000})
-REGISTRY_IMAGE=$(REGISTRY_HOST)/$(ORGANIZATION)/$(APPLICATION_NAME)
-
-#VERSION?="$(APP_VERSION)-$$(date +%Y%m%d)"
-VERSION?="$(APP_VERSION)"
-
-# The name of the container (default is current directory name)
-## DOCKER := $(shell echo $${PWD\#\#*/})
-DOCKER=$(APPLICATION_NAME)
-DOCKER_REPO=$(REGISTRY_HOST)/$(PROJECT)
-# APPLICATION_NAME ~= $(DOCKER_REPO)/$(DOCKER):$(VERSION)
-
+BASE_IMAGE := $(BASE_IMAGE)
 
 ## -- To Check syntax:
 #  cat -e -t -v Makefile
 
-#VOLUME_MAP := "-v $${PWD}/json:/json -v $${PWD}/data:/data"
+# The name of the container (default is current directory name)
+#DOCKER_NAME := $(shell echo $${PWD\#\#*/})
+DOCKER_NAME := $(shell echo $${PWD##*/}|tr '[:upper:]' '[:lower:]'|tr "/: " "_" )
+
+ORGANIZATION=$(shell echo $${ORGANIZATION:-openkbs})
+APP_VERSION=$(shell echo $${APP_VERSION:-latest})
+imageTag=$(ORGANIZATION)/$(DOCKER_NAME)
+
+## Docker Registry (Private Server)
+REGISTRY_HOST=
+#REGISTRY_HOST=$(shell echo $${REGISTRY_HOST:-localhost:5000})
+REGISTRY_IMAGE=$(REGISTRY_HOST)/$(ORGANIZATION)/$(DOCKER_NAME)
+
+#VERSION?="$(APP_VERSION)-$$(date +%Y%m%d)"
+VERSION?="$(APP_VERSION)"
+
+## -- Uncomment this to use local Registry Host --
+DOCKER_IMAGE := $(ORGANIZATION)/$(DOCKER_NAME)
+
+## -- To Check syntax:
+#  cat -e -t -v Makefile
+
+# -- example --
+#VOLUME_MAP := "-v $${PWD}/data:/home/developer/data -v $${PWD}/workspace:/home/developer/workspace"
 VOLUME_MAP := 
+
+# -- Local SAVE of image --
+IMAGE_EXPORT_PATH := "$${PWD}/archive"
 
 # { no, on-failure, unless-stopped, always }
 RESTART_OPTION := always
 
 SHA := $(shell git describe --match=NeVeRmAtCh --always --abbrev=40 --dirty=*)
 
-.PHONY: clean rmi build push create pull up down run stop exec
+TIME_START := $(shell date +%s)
+
+.PHONY: clean rmi build push pull up down run stop exec
 
 clean:
-	sudo docker rm -f $(APPLICATION_NAME)
+	$(DOCKER_NAME) $(DOCKER_IMAGE):$(VERSION) 
 
-rmi:
-	sudo docker rmi -f $$(docker images -f dangling=true -q)
+default: build
+
+build-time:
+	docker build \
+	--build-arg BASE_IMAGE="$(BASE_IMAGE)" \
+	--build-arg CIRCLE_SHA1="$(SHA)" \
+	--build-arg version=$(VERSION) \
+	--build-arg VCS_REF=`git rev-parse --short HEAD` \
+	--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+	-t $(DOCKER_IMAGE):$(VERSION) .
+
+build-rm:
+	docker build --force-rm --no-cache \
+		-t $(DOCKER_IMAGE):$(VERSION) .
 
 build:
 	docker build \
-	--build-arg CIRCLE_SHA1="$(SHA)" \
-	--build-arg FROM_BASE=${FROM_BASE} \
-	--build-arg version=$(VERSION) \
-	--build-arg ENABLE_HTTPS=true \
-	-t $(imageTag):latest .
+	    -t $(DOCKER_IMAGE):$(VERSION) .
+	docker images | grep $(DOCKER_IMAGE)
+	@echo ">>> Total Dockder images Build using time in seconds: $$(($$(date +%s)-$(TIME_START))) seconds"
 
-push: build
-	#docker tag $(imageTag):$(VERSION) $(REGISTRY_IMAGE):$(VERSION)
-	sudo docker tag $(imageTag):latest $(REGISTRY_IMAGE):latest
-	#docker push $(REGISTRY_IMAGE):$(VERSION)
-	sudo docker push $(REGISTRY_IMAGE):latest
+push:
+	docker commit -m "$comment" ${containerID} ${imageTag}:$(VERSION)
+	docker push $(DOCKER_IMAGE):$(VERSION)
 
+	docker tag $(imageTag):$(VERSION) $(REGISTRY_IMAGE):$(VERSION)
+	#docker tag $(imageTag):latest $(REGISTRY_IMAGE):latest
+	docker push $(REGISTRY_IMAGE):$(VERSION)
+	#docker push $(REGISTRY_IMAGE):latest
 	@if [ ! "$(IMAGE_EXPORT_PATH)" = "" ]; then \
 		mkdir -p $(IMAGE_EXPORT_PATH); \
-		sudo docker save $(REGISTRY_IMAGE):latest | gzip > $(IMAGE_EXPORT_PATH)/$(APPLICATION_NAME).tar.gz; \
+		docker save $(REGISTRY_IMAGE):$(VERSION) | gzip > $(IMAGE_EXPORT_PATH)/$(DOCKER_NAME)_$(VERSION).tar.gz; \
 	fi
 	
 pull:
-	sudo docker pull $(REGISTRY_IMAGE):latest
+	@if [ "$(REGISTRY_HOST)" = "" ]; then \
+		docker pull $(DOCKER_IMAGE):$(VERSION) ; \
+	else \
+		docker pull $(REGISTRY_IMAGE):$(VERSION) ; \
+	fi
 
-up-it:
-	sudo docker-compose up
-	sudo docker-compose down
-
-up: build
-	sudo docker-compose rm
-	sudo docker-compose up -d
+## -- deployment mode (daemon service): -- ##
+up:
+	bin/auto-config-all.sh
+	#if [ "$(USER_ID)" != "" ] && [ "$(USER_ID)" != "" ]; then \
+	#	sudo chown -R $(USER_ID):$(GROUP_ID) data workspace ; \
+	#	docker-compose up --remove-orphans -u $(USER_ID):$(GROUP_ID) -d ; \
+	#else \
+	#	docker-compose up --remove-orphans -d ; \
+	#fi
+	docker-compose up --remove-orphans -d
+	docker ps | grep $(DOCKER_IMAGE)
+	@echo ">>> Total Dockder images Build using time in seconds: $$(($$(date +%s)-$(TIME_START))) seconds"
 
 down:
-	sudo docker-compose down
+	docker-compose down
+	docker ps | grep $(DOCKER_IMAGE)
+	@echo ">>> Total Dockder images Build using time in seconds: $$(($$(date +%s)-$(TIME_START))) seconds"
 
-run: build
-	sudo docker run --name=$(APPLICATION_NAME) --restart=$(RESTART_OPTION) $(VOLUME_MAP) $(imageTag):latest
+down-rm:
+	docker-compose down -v --rmi all --remove-orphans
+	docker ps | grep $(DOCKER_IMAGE)
+	@echo ">>> Total Dockder images Build using time in seconds: $$(($$(date +%s)-$(TIME_START))) seconds"
+
+## -- dev/debug -- ##
+run:
+	bin/auto-config-all.sh
+	./run.sh
+	docker ps | grep $(DOCKER_IMAGE)
+	
+#docker run --name=$(DOCKER_NAME) --restart=$(RESTART_OPTION) $(VOLUME_MAP) $(DOCKER_IMAGE):$(VERSION)
 
 stop:
-	sudo docker stop --name=$(APPLICATION_NAME)
+	docker stop --name=$(DOCKER_NAME)
 
-exec: up
-	sudo docker-compose exec $(APPLICATION_NAME) /bin/bash
+status:
+	docker ps | grep $(DOCKER_NAME)
+
+rmi:
+	docker rmi $$(docker images -f dangling=true -q)
+
+exec:
+	docker-compose exec $(DOCKER_NAME) /bin/bash
